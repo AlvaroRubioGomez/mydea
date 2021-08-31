@@ -14,6 +14,7 @@ from graphql_auth.schema import UserQuery, MeQuery
 
 class AuthMutation(graphene.ObjectType):
    register = mutations.Register.Field()  
+   login = mutations.ObtainJSONWebToken.Field()
 
 class Query(
     UserQuery,
