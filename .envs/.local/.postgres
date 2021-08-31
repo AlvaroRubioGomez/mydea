@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=mydea
+POSTGRES_USER=DwRmXZVdueIqWJOKWPZkMkiRdSuxdufT
+POSTGRES_PASSWORD=trlXZFsjYUNCwNqyQqJSLRRDN5UJp3Wc1SFj72qorctAIa4ZdxM3XbE4PumakKBc
