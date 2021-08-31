@@ -64,16 +64,15 @@ THIRD_PARTY_APPS = [
     "crispy_forms",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
-    #Graphene
-    'graphene_django',
-    #Django-filter
-    'django_filters'
+    "allauth.socialaccount",                        
+    'graphene_django', #Graphene
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig', # refresh jwt tokens
+    'django_filters', #Django-filter
+    'graphql_auth', #Django-graphql-auth
 ]
 
 LOCAL_APPS = [
-    "mydea.users.apps.UsersAppConfig",
-    # Your stuff: custom apps go here
+    "mydea.users.apps.UsersAppConfig",    
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -86,9 +85,13 @@ MIGRATION_MODULES = {"sites": "mydea.contrib.sites.migrations"}
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
+# AUTHENTICATION_BACKENDS = [
+#     "django.contrib.auth.backends.ModelBackend",
+#     "allauth.account.auth_backends.AuthenticationBackend",
+# ]
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
+    'graphql_auth.backends.GraphQLAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
@@ -272,5 +275,27 @@ SOCIALACCOUNT_ADAPTER = "mydea.users.adapters.SocialAccountAdapter"
 ROOT_URLCONF = 'config.urls'
 
 GRAPHENE = {
-    "SCHEMA": "config.schema.schema"
+    "SCHEMA": "config.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+
+}
+
+# Graphql-JWT
+GRAPHQL_JWT = {
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",        
+    ],
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+}
+
+# Graphql-auth
+GRAPHQL_AUTH = {
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": [
+      "first_name",
+      "last_name",
+      "phone_number",
+    ]
 }
