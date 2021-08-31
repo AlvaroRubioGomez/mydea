@@ -3,17 +3,27 @@
 # Graphene
 import graphene
 
+# Django-graphql-auth
+from graphql_auth import mutations
+from graphql_auth.schema import UserQuery, MeQuery
+
 # Queries
-from mydea.users.graphql.queries import UserQuery
 
 # Mutations
-from mydea.users.graphql.mutations import UserMutation
 
 
-class Query(UserQuery, graphene.ObjectType):
+class AuthMutation(graphene.ObjectType):
+   register = mutations.Register.Field()  
+
+class Query(
+    UserQuery,
+    MeQuery, 
+    graphene.ObjectType):
     pass
 
-class Mutation(UserMutation, graphene.ObjectType):
+class Mutation(
+    AuthMutation,     
+    graphene.ObjectType):
     pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

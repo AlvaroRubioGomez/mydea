@@ -19,3 +19,9 @@ django-filter==2.4.0 # https://github.com/carltongibson/django-filter
 
 # Graphene
 graphene-django==2.15.0 # https://github.com/graphql-python/graphene-django
+
+# JWT
+django-graphql-jwt==0.3.0 # https://github.com/flavors/django-graphql-jwt
+
+# Graphql-auth
+django-graphql-auth==0.3.16 # https://github.com/PedroBern/django-graphql-auth
