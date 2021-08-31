@@ -10,8 +10,7 @@ from mydea.utils.models import MyDeaModel
 
 class User(MyDeaModel, AbstractUser):
     """"User model.
-    Extend from Django's Abstract Base User, change the username field
-    to email and add some extra fields.
+    Extend from Django's Abstract Base User by adding some extra fields.
     """
 
     email = models.EmailField(
@@ -26,16 +25,14 @@ class User(MyDeaModel, AbstractUser):
         regex=r'\+?1?\d{9,15}$',
         message="Phone number must be entered in the format: +999999999. Up to 15 digits allowed."
     )
-    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True, null=True)
-
-    is_verified = models.BooleanField(
-        'verified',
-        default=False,
-        help_text='Set to true when the user have verified its email address.'
+    phone_number = models.CharField(
+        validators=[phone_regex], 
+        max_length=17, 
+        blank=True, 
+        null=True
     )
 
-    # REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
-
+    
     def __str__(self):
         """Return username."""
         return self.username
