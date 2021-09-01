@@ -14,9 +14,11 @@ from mydea.users.graphql.mutations import AutoVerificationRegister
 
 
 class AuthMutation(graphene.ObjectType):
-    register = AutoVerificationRegister.Field()    
+    register = AutoVerificationRegister.Field() #custom register
     login = mutations.ObtainJSONWebToken.Field()
     password_change = mutations.PasswordChange.Field()
+    send_password_reset_email = mutations.SendPasswordResetEmail.Field()
+    password_reset = mutations.PasswordReset.Field()
 
 class Query(
     UserQuery,
