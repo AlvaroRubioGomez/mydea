@@ -1,20 +1,28 @@
 """User graphql mutations"""
 
-# Django
-from django.core.exceptions import ValidationError
-
-# Graphene
-import graphene
-from graphene import relay, ObjectType
-from graphene_django import DjangoObjectType
-from graphql_relay import from_global_id
-from graphql import GraphQLError
-
-# Types
-
 # Models
 from mydea.users.models import User
 
-# Errors
-from mydea.utils.errors import Error, format_validation_errors
+# Graphql-auth
+from graphql_auth.mutations import Register
+
+
+class AutoVerificationRegister(Register):
+
+    @classmethod
+    def mutate(cls, root, info, **kwargs):
+        # Get Register mutation response
+        response = super().resolve_mutation(root, info, **kwargs)        
+
+        # Verified user
+        if response.success:
+            username = kwargs.get("username")
+            user = User.objects.get(username=username)            
+            user.status.verified = True
+            user.status.save(update_fields=["verified"])        
+        
+        return response
+
+
+
 

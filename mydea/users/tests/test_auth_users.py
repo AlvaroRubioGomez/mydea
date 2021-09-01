@@ -19,16 +19,14 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 # Models
 from mydea.users.models.users import User
 
-# # Schema
-# from config.schema import schema
-
 # Queries & Mutations
 from .users_qm_variables import (
   users_query,
   user_query,
   me_query,
   register_mutation,
-  login_mutation
+  login_mutation,
+  password_change_mutation
 )
 
 
@@ -37,15 +35,20 @@ class TestUserAuth(JSONWebTokenTestCase):
     """User test case"""
 
     def setUp(self):        
-        # Create two anonymous users
+        # Anonymous users
         mixer.blend(User)
-        mixer.blend(User)
-        # Create an authenticated user        
-        self.user = get_user_model().objects.create(
-            username="test_username",
-            first_name="test_name"
-        )
-        self.client.authenticate(self.user)
+        mixer.blend(User)             
+
+        # Registered user
+        self.user_data = {
+            "email": "dummyemail@gmail.com",
+            "username": "dummy",                        
+            "password1": "megapass1234",
+            "password2": "megapass1234"
+        }
+        self.client.execute(register_mutation, variables = {**self.user_data})        
+        self.registered_user = get_user_model().objects.get(username=self.user_data["username"])
+        self.client.authenticate(self.registered_user) 
 
         # Override self.user.id with Node ID
         response = self.client.execute(
@@ -54,7 +57,7 @@ class TestUserAuth(JSONWebTokenTestCase):
         )                
         users = response.data["users"]["edges"]
         first_user = users[0]["node"]        
-        self.user.id = first_user["id"]
+        self.registered_user.id = first_user["id"]            
 
 
     def test_users_query(self):
@@ -64,44 +67,45 @@ class TestUserAuth(JSONWebTokenTestCase):
         users = response.data["users"]["edges"]
         first_user = users[0]["node"] 
 
-        self.assertEqual(len(users), 3)
-        self.assertEqual(first_user["id"], self.user.id)
-        self.assertEqual(first_user["username"], self.user.username)
+        self.assertEqual(len(users), 3)        
+        self.assertEqual(first_user["username"], self.registered_user.username)
 
 
     def test_user_query(self):
-        """Unit test for retrieving a single user"""
+        """Unit test for retrieving a single user"""        
 
         response = self.client.execute(
             user_query,
-            variables={"id": self.user.id}
+            variables={"id": self.registered_user.id}
         )        
         user = response.data["user"]     
 
-        self.assertEqual(user["id"], self.user.id)
-        self.assertEqual(user["username"], self.user.username)
-        self.assertEqual(user["firstName"], self.user.first_name)   
+        self.assertEqual(user["id"], self.registered_user.id)
+        self.assertEqual(user["username"], self.registered_user.username)
+        self.assertEqual(user["firstName"], self.registered_user.first_name)   
 
 
     def test_me_query(self):
+        """Unit test for retrieving the user who makes the request"""
+
         response = self.client.execute(me_query)       
         user_me = response.data["me"]
-
-        self.assertEqual(user_me["id"], self.user.id)
-        self.assertEqual(user_me["username"], self.user.username)
-        self.assertEqual(user_me["firstName"], self.user.first_name) 
+        
+        self.assertEqual(user_me["username"], self.registered_user.username)
+        self.assertEqual(user_me["firstName"], self.registered_user.first_name) 
         self.assertIsNotNone(user_me["created"])
 
 
     def test_register_mutation(self):
-        """Unit test for registering an user"""
+        """Unit test for registering an user with automatic 
+        account verification"""
 
         # Dummy user data
         user_data = {
-            "email": "dummyemail@gmail.com",
-            "username": "dummy",
-            "firstName": "Dummy Name",
-            "lastName": "Dummy Lastname",            
+            "email": "example@gmail.com",
+            "username": "example",
+            "firstName": "example name",
+            "lastName": "example lastname",            
             "password1": "megapass1234",
             "password2": "megapass1234"
         }
@@ -110,34 +114,31 @@ class TestUserAuth(JSONWebTokenTestCase):
             register_mutation, 
             variables = {**user_data}
         )        
-        register = response.data["register"]        
+        register = response.data["register"]                
         
         self.assertTrue(register["success"])
         self.assertIsNone(register["errors"])
         self.assertIsNotNone(register["refreshToken"])
         self.assertIsNotNone(["token"])
 
+        # Check if verified user
+        response = self.client.execute(
+            users_query,
+            variables={"username": user_data["username"]}
+        )  
+        verified_user = response.data["users"]["edges"][0]["node"] 
+
+        self.assertTrue(verified_user["verified"])
+
     
     def test_login_mutation_successful(self):
-        """Unit test for successful user login"""
-
-        # Register dummy user
-        user_data = {
-            "email": "dummyemail@gmail.com",
-            "username": "dummy",                        
-            "password1": "megapass1234",
-            "password2": "megapass1234"
-        }
-        self.client.execute(
-            register_mutation, 
-            variables = {**user_data}
-        ) 
+        """Unit test for successful user login"""       
 
         response = self.client.execute(
             login_mutation,
             variables={
-                "username": user_data["username"],
-                "password": user_data["password1"]
+                "username": self.registered_user.username,
+                "password": self.user_data["password1"]
         })        
         login = response.data["login"]
         user = login["user"]        
@@ -146,8 +147,8 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.assertIsNone(login["errors"])
         self.assertIsNotNone(login["refreshToken"])
         self.assertIsNotNone(login["token"])
-        self.assertEqual(user["username"], user_data["username"])
-        self.assertEqual(user["email"], user_data["email"])
+        self.assertEqual(user["username"], self.registered_user.username)
+        self.assertEqual(user["email"], self.registered_user.email)
 
 
     def test_login_mutation_invalid_credentials(self):
@@ -172,28 +173,26 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.assertEqual(errors["nonFieldErrors"][0]["code"], "invalid_credentials") 
 
 
+    def test_password_change_mutation(self):
+        """Unit test for changing the password"""
 
-    # def test_update_user_mutation(self):
-    #         """Unit test for updating an user"""
+        # new password
+        new_pass = "newmegapass1234"
 
-    #         # Dummy user data
-    #         user_data = {
-    #             "username": "updatedUsername",
-    #             "firstName": "updated name"
-    #         }
+        response = self.client.execute(
+            password_change_mutation,
+            variables={
+                "oldPassword": self.user_data["password1"],
+                "newPassword1": new_pass,
+                "newPassword2": new_pass
+        })  
 
-    #         response = self.client.execute(
-    #             update_user_mutation,
-    #             variable_values = {
-    #                 "id": self.user.id,
-    #                 **user_data,
-    #         })
-    #         update_user = response.get("data").get("updateUser").get("user")
-    #         errors = response.get("data").get("updateUser").get("errors")
+        pass_change = response.data["passwordChange"]          
 
-    #         assert errors is None
-    #         assert update_user["username"] == user_data["username"]
-    #         assert update_user["firstName"] == user_data["firstName"]
-    #         assert update_user["lastName"] == self.user.last_name
-    #         assert update_user["email"] == self.user.email
+        self.assertTrue(pass_change["success"])
+        self.assertIsNotNone(pass_change["token"])
+        self.assertIsNotNone(pass_change["refreshToken"])        
+        self.assertIsNone(pass_change["errors"])        
+         
+
 

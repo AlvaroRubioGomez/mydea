@@ -10,11 +10,13 @@ from graphql_auth.schema import UserQuery, MeQuery
 # Queries
 
 # Mutations
+from mydea.users.graphql.mutations import AutoVerificationRegister
 
 
 class AuthMutation(graphene.ObjectType):
-   register = mutations.Register.Field()  
-   login = mutations.ObtainJSONWebToken.Field()
+    register = AutoVerificationRegister.Field()    
+    login = mutations.ObtainJSONWebToken.Field()
+    password_change = mutations.PasswordChange.Field()
 
 class Query(
     UserQuery,
@@ -23,7 +25,7 @@ class Query(
     pass
 
 class Mutation(
-    AuthMutation,     
+    AuthMutation,    
     graphene.ObjectType):
     pass
 
