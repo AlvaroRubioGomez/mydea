@@ -1,7 +1,7 @@
 """User graphql mutations"""
 
 # Models
-from mydea.users.models import User
+from mydea.users.models import User, Profile
 
 # Graphql-auth
 from graphql_auth.mutations import Register
@@ -19,13 +19,15 @@ class AutoVerificationRegister(Register):
     even if the email field is not defined as unique
     (default of the default django user model).
 
-    When creating the user, it also creates a `UserStatus`
+    When creating the user:
+    + creates a `UserStatus`
     related to that user, making it possible to track
     if the user is archived, verified and has a secondary
     email.
-
-    When creating the user, it sets the `UserStatus` verified
+    + sets the `UserStatus` verified
     flag as true.
+    + creates an empty profile associated with the registered 
+    user.
 
     Send account verification email.    
     """
@@ -38,14 +40,18 @@ class AutoVerificationRegister(Register):
     @classmethod
     def mutate(cls, root, info, **kwargs):
         # Get Register mutation response
-        response = super().resolve_mutation(root, info, **kwargs)        
+        response = super().resolve_mutation(root, info, **kwargs)
 
-        # Verified user
         if response.success:
+            # Get user            
             username = kwargs.get("username")
-            user = User.objects.get(username=username)            
+            user = User.objects.get(username=username)   
+            # Verified user         
             user.status.verified = True
-            user.status.save(update_fields=["verified"])        
+            user.status.save(update_fields=["verified"])    
+            # Create profile with user
+            profile = Profile.objects.create(user=user) 
+            profile.save()   
         
         return response
 

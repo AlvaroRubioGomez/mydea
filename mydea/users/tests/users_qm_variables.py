@@ -1,3 +1,5 @@
+"""User queries and mutations variables"""
+
 # Queries
 users_query = """
 query($first: Int, $username: String){
