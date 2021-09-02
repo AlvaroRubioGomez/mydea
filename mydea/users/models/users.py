@@ -9,7 +9,7 @@ from django.core.validators import RegexValidator
 from mydea.utils.models import MyDeaModel
 
 class User(MyDeaModel, AbstractUser):
-    """"User model.
+    """User model.
     Extend from Django's Abstract Base User by adding some extra fields.
     """
 
