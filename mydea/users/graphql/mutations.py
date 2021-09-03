@@ -1,13 +1,16 @@
 """User graphql mutations"""
 
+# Graphene
+import graphene
+
+# Graphql-auth
+from graphql_auth import mutations
+
 # Models
 from mydea.users.models import User, Profile
 
-# Graphql-auth
-from graphql_auth.mutations import Register
 
-
-class AutoVerificationRegister(Register):
+class AutoVerificationRegister(mutations.Register):
     """
     Register user with fields defined in the settings.
 
@@ -56,5 +59,12 @@ class AutoVerificationRegister(Register):
         return response
 
 
+# Auth mutations
+class AuthMutation(graphene.ObjectType):
+    register = AutoVerificationRegister.Field() #override register
+    login = mutations.ObtainJSONWebToken.Field()
+    password_change = mutations.PasswordChange.Field()
+    send_password_reset_email = mutations.SendPasswordResetEmail.Field()
+    password_reset = mutations.PasswordReset.Field()
 
 

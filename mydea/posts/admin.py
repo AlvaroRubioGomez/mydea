@@ -13,7 +13,7 @@ class PostAdmin(admin.ModelAdmin):
     """Post model admin."""
 
     model = Post
-    list_display = ('get_username', 'body', 'visibility')
+    list_display = ('get_username', 'body', 'visibility', 'modified')
 
     def get_username(self, obj):
         return obj.created_by.username

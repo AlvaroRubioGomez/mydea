@@ -1,5 +1,22 @@
 """Post queries and mutations variables"""
 
+# Queries
+
+my_posts_query = """
+query{
+	myPosts{
+    edges{
+      node{
+        body,
+        created,
+        createdBy{
+          username
+        }
+      }
+    }
+  }
+}
+"""
 
 # Mutations
 
@@ -16,6 +33,7 @@ mutation(
         success,
         post{
           id,
+          created,
           visibility,
           body,
           createdBy{
@@ -29,3 +47,4 @@ mutation(
     }
 }
 """
+
