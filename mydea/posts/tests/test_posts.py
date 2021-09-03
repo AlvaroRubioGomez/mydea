@@ -23,6 +23,7 @@ from mydea.posts.models.posts import Post
 from .posts_qm_variables import (
   create_post_mutation,
   my_posts_query,
+  edit_visibility_mutation,
 )
 
 @pytest.mark.django_db
@@ -36,6 +37,7 @@ class TestPost(JSONWebTokenTestCase):
 
         # Post data
         self.wrong_visibility = "PR"
+        self.change_visibility = "PV"
         self.post_data = {            
             "visibility": "PT", # protected
             "body": "This is a dummy text"
@@ -47,17 +49,17 @@ class TestPost(JSONWebTokenTestCase):
             mixer.blend(Post)
         
         # Authenticated user posts 
-        self.auth_posts_amount = 2  
-        self.auth_posts = [
+        self.auth_posts_amount = 5  
+        self.auth_posts = [            
             self.client.execute(
                 create_post_mutation,
                 variables={
                     "body": "{} {}".format(self.post_data["body"], i),
                     "visibility": self.post_data["visibility"]
-            })
+            }).data["createPost"]["post"]
             for i in range(self.auth_posts_amount)  
         ] 
-        self.auth_posts.reverse() # descending created order       
+        self.auth_posts.reverse() # descending created order        
         
 
     def test_create_post_mutation(self):
@@ -134,7 +136,7 @@ class TestPost(JSONWebTokenTestCase):
 
         for i, post in enumerate(post_collection):
             # Get authenticated post data 
-            auth_body = self.auth_posts[i].data["createPost"]["post"]["body"]            
+            auth_body = self.auth_posts[i]["body"]            
             
             # Get response post data
             res_body = post["node"]["body"]
@@ -159,6 +161,28 @@ class TestPost(JSONWebTokenTestCase):
             self.assertTrue(prev_created > created)
             prev_created = created
 
+    
+    def test_my_posts_query(self):
+        """Unit test for editing a post visibility"""
+
+        auth_post_id = self.auth_posts[0]["id"]
+
+        response = self.client.execute(
+            edit_visibility_mutation,
+            variables={
+                "id": auth_post_id,
+                "visibility": self.change_visibility #PT -> PV
+        })
+        success = response.data["editVisibility"]["success"]
+        errors = response.data["editVisibility"]["errors"]
+        post = response.data["editVisibility"]["post"]
+
+        self.assertTrue(success)
+        self.assertIsNone(errors)
+        self.assertEqual(post["id"], auth_post_id)
+        self.assertEqual(post["visibility"], self.change_visibility)
+
+        
     
 
             

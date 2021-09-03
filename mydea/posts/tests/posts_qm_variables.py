@@ -48,3 +48,27 @@ mutation(
 }
 """
 
+edit_visibility_mutation = """
+mutation(
+  $id: ID!
+  $visibility: String!
+){
+  editVisibility(
+    input: {
+      id: $id,
+      visibility: $visibility
+    }){
+    success,
+    post{
+      id,
+      visibility
+    }
+    errors{
+      fieldName,
+      messages
+    }
+    
+  }
+}
+"""
+
