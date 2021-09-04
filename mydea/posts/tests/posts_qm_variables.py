@@ -72,3 +72,17 @@ mutation(
 }
 """
 
+delete_post_mutation = """
+mutation(
+  $id: ID!
+){
+  deletePost(input: {id: $id}){
+    success,   
+    errors{
+      fieldName,
+      messages
+    }    
+  }
+}
+"""
+

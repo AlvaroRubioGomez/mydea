@@ -14,6 +14,9 @@ from graphql_relay import from_global_id
 # Django-graphql-auth
 from graphql_jwt.decorators import login_required
 
+# Decorators
+from mydea.posts.decorators import is_post_owner
+
 # Types
 from .types import PostNode
 
@@ -52,7 +55,7 @@ class CreatePostMutation(relay.ClientIDMutation):
             )          
             # Validate all fields
             post.full_clean()
-            post.save()
+            post.save()            
 
             return CreatePostMutation(success=True, post=post)
 
@@ -74,6 +77,7 @@ class UpdatePostMutation(relay.ClientIDMutation):
     errors = graphene.List(Error)    
 
     @login_required
+    @is_post_owner
     def mutate_and_get_payload(root, info, id, visibility):
         try:
             # Get post
@@ -91,8 +95,36 @@ class UpdatePostMutation(relay.ClientIDMutation):
             return CreatePostMutation(success=False, errors=errors)
 
 
+class DeletePostMutation(relay.ClientIDMutation):
+    """Post mutation for deleting a post"""
+    post = graphene.Field(PostNode)
+
+    class Input:     
+        id = graphene.ID(required=True)               
+
+    success = graphene.Boolean()
+    errors = graphene.List(Error)    
+
+    @login_required
+    @is_post_owner
+    def mutate_and_get_payload(root, info, id):
+        try:
+            # Get post
+            post = Post.objects.get(pk=from_global_id(id)[1])
+            # Delete post
+            post.delete()            
+
+            return UpdatePostMutation(success=True)
+        
+        except ValidationError as e:
+            # Format all validations errors
+            errors = format_validation_errors(e)
+            return CreatePostMutation(success=False, errors=errors)
+
+
 # Post mutations
 class PostMutation(graphene.ObjectType):
     create_post = CreatePostMutation.Field()
     edit_visibility = UpdatePostMutation.Field()
+    delete_post = DeletePostMutation.Field()
 

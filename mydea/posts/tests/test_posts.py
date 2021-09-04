@@ -24,6 +24,7 @@ from .posts_qm_variables import (
   create_post_mutation,
   my_posts_query,
   edit_visibility_mutation,
+  delete_post_mutation,
 )
 
 @pytest.mark.django_db
@@ -162,7 +163,7 @@ class TestPost(JSONWebTokenTestCase):
             prev_created = created
 
     
-    def test_my_posts_query(self):
+    def test_edit_visibility_query(self):
         """Unit test for editing a post visibility"""
 
         auth_post_id = self.auth_posts[0]["id"]
@@ -181,6 +182,31 @@ class TestPost(JSONWebTokenTestCase):
         self.assertIsNone(errors)
         self.assertEqual(post["id"], auth_post_id)
         self.assertEqual(post["visibility"], self.change_visibility)
+
+    
+    def test_delete_post(self):
+        """Unit test for deleting a post"""
+
+        auth_post_id = self.auth_posts[0]["id"]
+
+        response = self.client.execute(
+            delete_post_mutation,
+            variables={"id": auth_post_id}
+        )
+        success = response.data["deletePost"]["success"]
+        errors = response.data["deletePost"]["errors"]
+
+        # Get remaining posts after delete
+        response = self.client.execute(my_posts_query)
+        post_collection = response.data["myPosts"]["edges"]
+
+        self.assertTrue(success)
+        self.assertIsNone(errors)
+        self.assertEqual(
+            len(post_collection), 
+            self.auth_posts_amount - 1
+        )
+        
 
         
     

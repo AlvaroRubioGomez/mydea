@@ -21,12 +21,17 @@ class ProfileAdmin(admin.ModelAdmin):
     """Profile model admin."""
 
     model = Profile
-    list_display = ['get_username']
+    list_display = ['get_username', 'get_posts_amount']
 
     def get_username(self, obj):
         return obj.user.username
     get_username.admin_order_field = 'user'
     get_username.short_description = 'Username'
+
+    def get_posts_amount(self, obj):
+        return obj.posts
+    #get_posts_amount.admin_order_field = 'user'
+    get_posts_amount.short_description = 'Posts'
 
     search_fields = ('user__username', 'user__email')
     list_filter = ('posts__visibility',)
