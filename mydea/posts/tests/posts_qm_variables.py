@@ -4,13 +4,15 @@
 
 my_posts_query = """
 query{
-	myPosts{
+  myPosts{
     edges{
       node{
         body,
         created,
         createdBy{
-          username
+          user{
+            username
+          }
         }
       }
     }
@@ -33,11 +35,12 @@ mutation(
         success,
         post{
           id,
-          created,
-          visibility,
           body,
+          visibility
           createdBy{
-            username
+            user{
+                username
+            }
           }
         }
         errors{

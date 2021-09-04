@@ -18,7 +18,8 @@ def is_post_owner(f):
         id = kwargs['id']
         post = Post.objects.get(pk=from_global_id(id)[1])
         # Check ownership
-        if context.user != post.created_by:
+        profile = context.user.profile      
+        if profile != post.created_by:
             raise GraphQLError('You do not have permission to perform this action.')            
         return f(*args, **kwargs)
     return wrapper
