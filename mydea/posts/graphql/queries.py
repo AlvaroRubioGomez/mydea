@@ -3,7 +3,7 @@
 # Graphene
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
-#from graphene import relay
+from graphene import relay
 
 # Django-graphql-auth
 from graphql_jwt.decorators import login_required
@@ -15,7 +15,8 @@ from .types import PostNode
 from mydea.posts.models import Post
 
 
-class PostsQuery(graphene.ObjectType):       
+class PostsQuery(graphene.ObjectType): 
+    post = relay.Node.Field(PostNode)      
     my_posts = DjangoFilterConnectionField(PostNode)    
     
     @login_required    
