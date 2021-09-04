@@ -15,15 +15,6 @@ class Profile(MyDeaModel):
     # Info
     user = models.OneToOneField('users.User', on_delete=models.CASCADE)   
 
-    # Publications
-    posts = models.ForeignKey(
-        'posts.Post', 
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
-    )
-    
-
     def __str__(self):
         """Return user's str representation."""
         return str(self.user)

@@ -11,31 +11,9 @@ query($first: Int, $username: String){
         firstName,
         lastName,
         email,
-        created,
-        verified
+        created
       }
     }
-  }
-}
-"""
-
-user_query = """
-query($id: ID!){
-  user(id: $id){
-    id,
-    username,
-    firstName
-  }
-}
-"""
-
-me_query = """
-query{
-  me{
-    id,
-    username,    
-    firstName,
-    created
   }
 }
 """
