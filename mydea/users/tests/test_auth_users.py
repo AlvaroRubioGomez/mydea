@@ -21,8 +21,6 @@ from mydea.users.models.users import User
 # Queries & Mutations
 from .users_qm_variables import (
   users_query,
-  user_query,
-  me_query,
   register_mutation,
   login_mutation,
   password_change_mutation
@@ -46,16 +44,17 @@ class TestUserAuth(JSONWebTokenTestCase):
             "password2": "megapass1234"
         }
         self.client.execute(register_mutation, variables = {**self.user_data})        
-        self.registered_user = get_user_model().objects.get(username=self.user_data["username"])
-        self.client.authenticate(self.registered_user) 
+        self.registered_user = get_user_model().objects.get(
+            username=self.user_data["username"]
+        )
+        self.client.authenticate(self.registered_user)       
 
         # Override self.user.id with Node ID
         response = self.client.execute(
             users_query,
             variable_values={"first": 1}
-        )                
-        users = response.data["users"]["edges"]
-        first_user = users[0]["node"]        
+        )                   
+        first_user = response.data["users"]["edges"][0]["node"]             
         self.registered_user.id = first_user["id"]            
 
 
@@ -68,31 +67,6 @@ class TestUserAuth(JSONWebTokenTestCase):
 
         self.assertEqual(len(users), 3)        
         self.assertEqual(first_user["username"], self.registered_user.username)
-
-
-    def test_user_query(self):
-        """Unit test for retrieving a single user"""        
-
-        response = self.client.execute(
-            user_query,
-            variables={"id": self.registered_user.id}
-        )        
-        user = response.data["user"]     
-
-        self.assertEqual(user["id"], self.registered_user.id)
-        self.assertEqual(user["username"], self.registered_user.username)
-        self.assertEqual(user["firstName"], self.registered_user.first_name)   
-
-
-    def test_me_query(self):
-        """Unit test for retrieving the user who makes the request"""
-
-        response = self.client.execute(me_query)       
-        user_me = response.data["me"]
-        
-        self.assertEqual(user_me["username"], self.registered_user.username)
-        self.assertEqual(user_me["firstName"], self.registered_user.first_name) 
-        self.assertIsNotNone(user_me["created"])
 
 
     def test_register_mutation(self):
@@ -118,16 +92,7 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.assertTrue(register["success"])
         self.assertIsNone(register["errors"])
         self.assertIsNotNone(register["refreshToken"])
-        self.assertIsNotNone(["token"])
-
-        # Check if verified user
-        response = self.client.execute(
-            users_query,
-            variables={"username": user_data["username"]}
-        )  
-        verified_user = response.data["users"]["edges"][0]["node"] 
-
-        self.assertTrue(verified_user["verified"])
+        self.assertIsNotNone(["token"]) 
 
     
     def test_login_mutation_successful(self):

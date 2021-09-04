@@ -16,7 +16,7 @@ from mydea.posts.models import Post
 
 
 class PostsQuery(graphene.ObjectType): 
-    post = relay.Node.Field(PostNode)      
+    #post = relay.Node.Field(PostNode)      
     my_posts = DjangoFilterConnectionField(PostNode)    
     
     @login_required    
