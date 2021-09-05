@@ -1,4 +1,4 @@
-"""User unit tests"""
+"""Profile unit tests"""
 
 # Django
 from django.contrib.auth import get_user_model
@@ -20,7 +20,8 @@ from mydea.users.models import Profile
 
 # Queries & Mutations
 from .qm_variables_profiles import (
-  following_query,  
+  following_query, 
+  followers_query, 
 )
 
 
@@ -65,4 +66,26 @@ class TestProfile(JSONWebTokenTestCase):
         for following_user in res_following_arr:
             res_username = following_user["node"]["username"]                      
             self.assertTrue(res_username in following_usernames)
+
+    def test_followers_query(self):
+        """Unit test for getting the followers of authenticated
+        user."""       
+
+        # First user
+        first_auth_user = self.auth_users[0]        
+        followers_usernames = [ 
+            first_auth_user.profile.followers.all()[i].username
+            for i in range(self.users_amount-1)
+        ]   
+        
+        self.client.authenticate(first_auth_user)
+        response = self.client.execute(followers_query)
+        res_followers_arr = response.data["followers"]["edges"] 
+        
+        # Check right amount of followers users
+        self.assertEqual(len(res_followers_arr), self.users_amount-1)        
+        # Check followers users belongs to user's followers list
+        for followers_user in res_followers_arr:
+            res_username = followers_user["node"]["username"]                      
+            self.assertTrue(res_username in followers_usernames)
         

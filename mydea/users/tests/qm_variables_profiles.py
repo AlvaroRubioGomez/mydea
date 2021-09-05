@@ -13,3 +13,16 @@ query{
   }
 }
 """
+
+followers_query = """
+query{
+  followers{
+    edges{
+      node{
+        username,
+        firstName       
+      }
+    }
+  }
+}
+"""
