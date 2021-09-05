@@ -8,7 +8,7 @@ import graphene
 
 # Queries
 from mydea.posts.graphql.queries import PostsQuery
-from mydea.users.graphql.queries import UsersQuery
+from mydea.users.graphql.queries import UsersQuery, ProfileQueries
 
 # Mutations
 from mydea.users.graphql.mutations import AuthMutation
@@ -18,6 +18,7 @@ from mydea.posts.graphql.mutations import PostMutation
 class Query(   
     UsersQuery,
     PostsQuery,
+    ProfileQueries,
     graphene.ObjectType):
     pass
 

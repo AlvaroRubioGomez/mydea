@@ -206,22 +206,4 @@ class TestPost(JSONWebTokenTestCase):
         self.assertEqual(
             len(post_collection), 
             self.auth_posts_amount - 1
-        )
-        
-
-        
-    
-
-            
-
-        
-
-
-
-
-
-    
-
-    
-
-                  
+        ) 
