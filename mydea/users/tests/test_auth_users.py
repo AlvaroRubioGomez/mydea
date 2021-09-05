@@ -47,15 +47,7 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.registered_user = get_user_model().objects.get(
             username=self.user_data["username"]
         )
-        self.client.authenticate(self.registered_user)       
-
-        # Override self.user.id with Node ID
-        response = self.client.execute(
-            users_query,
-            variable_values={"first": 1}
-        )                   
-        first_user = response.data["users"]["edges"][0]["node"]             
-        self.registered_user.id = first_user["id"]            
+        self.client.authenticate(self.registered_user)                   
 
 
     def test_users_query(self):
@@ -92,7 +84,10 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.assertTrue(register["success"])
         self.assertIsNone(register["errors"])
         self.assertIsNotNone(register["refreshToken"])
-        self.assertIsNotNone(["token"]) 
+        self.assertIsNotNone(["token"])         
+        # Check auto-verified user
+        user = User.objects.get(pk=self.registered_user.id)
+        self.assertTrue(user.status.verified)
 
     
     def test_login_mutation_successful(self):

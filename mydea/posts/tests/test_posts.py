@@ -20,7 +20,7 @@ from mydea.users.models import User, Profile
 from mydea.posts.models import Post
 
 # Queries & Mutations
-from .posts_qm_variables import (
+from .qm_variables_posts import (
   create_post_mutation,
   my_posts_query,
   edit_visibility_mutation,

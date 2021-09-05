@@ -18,8 +18,8 @@ class CustomUserNode(DjangoObjectType):
             'is_superuser',
             'is_staff',
             'is_active',
-            'date_joined',
-            'posts']
+            'date_joined'
+        ]
         filter_fields = {
             'username': ['exact', 'icontains']
         }

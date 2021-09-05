@@ -7,8 +7,7 @@ from django.core.exceptions import (
 
 # Graphene
 import graphene
-from graphene import relay, ObjectType
-from graphene_django import DjangoObjectType
+from graphene import relay
 from graphql_relay import from_global_id
 
 # Django-graphql-auth
@@ -79,20 +78,15 @@ class UpdatePostMutation(relay.ClientIDMutation):
     @login_required
     @is_post_owner
     def mutate_and_get_payload(root, info, id, visibility):
-        try:
-            # Get post
-            post = Post.objects.get(pk=from_global_id(id)[1])
-            # Update visibility
-            post.visibility = visibility
-            post.full_clean()
-            post.save()
+        #try:
+        # Get post
+        post = Post.objects.get(pk=from_global_id(id)[1])
+        # Update visibility
+        post.visibility = visibility
+        post.full_clean()
+        post.save()
 
-            return UpdatePostMutation(success=True, post=post)
-        
-        except ValidationError as e:
-            # Format all validations errors
-            errors = format_validation_errors(e)
-            return CreatePostMutation(success=False, errors=errors)
+        return UpdatePostMutation(success=True, post=post)      
 
 
 class DeletePostMutation(relay.ClientIDMutation):
@@ -108,18 +102,13 @@ class DeletePostMutation(relay.ClientIDMutation):
     @login_required
     @is_post_owner
     def mutate_and_get_payload(root, info, id):
-        try:
-            # Get post
-            post = Post.objects.get(pk=from_global_id(id)[1])
-            # Delete post
-            post.delete()            
+        #try:
+        # Get post
+        post = Post.objects.get(pk=from_global_id(id)[1])
+        # Delete post
+        post.delete()            
 
-            return UpdatePostMutation(success=True)
-        
-        except ValidationError as e:
-            # Format all validations errors
-            errors = format_validation_errors(e)
-            return CreatePostMutation(success=False, errors=errors)
+        return UpdatePostMutation(success=True)        
 
 
 # Post mutations
