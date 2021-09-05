@@ -15,7 +15,7 @@ class Profile(MyDeaModel):
     # Info
     user = models.OneToOneField('users.User', on_delete=models.CASCADE) 
 
-    # Social
+    # Connections
     following = models.ManyToManyField(
         'users.User', 
         blank=True, 

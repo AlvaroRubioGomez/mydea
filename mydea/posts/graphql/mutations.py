@@ -78,15 +78,21 @@ class UpdatePostMutation(relay.ClientIDMutation):
     @login_required
     @is_post_owner
     def mutate_and_get_payload(root, info, id, visibility):
-        #try:
-        # Get post
-        post = Post.objects.get(pk=from_global_id(id)[1])
-        # Update visibility
-        post.visibility = visibility
-        post.full_clean()
-        post.save()
+        try:
+            # Get post
+            post = Post.objects.get(pk=from_global_id(id)[1])
+            # Update visibility
+            post.visibility = visibility
+            # Validate all fields
+            post.full_clean()
+            post.save()
 
-        return UpdatePostMutation(success=True, post=post)      
+            return UpdatePostMutation(success=True, post=post)   
+
+        except ValidationError as e:
+            # Format all validations errors
+            errors = format_validation_errors(e)
+            return CreatePostMutation(success=False, errors=errors)   
 
 
 class DeletePostMutation(relay.ClientIDMutation):

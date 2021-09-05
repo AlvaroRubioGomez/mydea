@@ -12,13 +12,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Post',
+            name='Request',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created', models.DateTimeField(auto_now_add=True, help_text='Date time on which the object was created.', verbose_name='created at')),
                 ('modified', models.DateTimeField(auto_now=True, help_text='Date time on which the object was modified.', verbose_name='modified at')),
-                ('visibility', models.CharField(blank=True, choices=[('PB', 'public'), ('PT', 'protected'), ('PV', 'private')], default='PB', max_length=2, null=True)),
-                ('body', models.CharField(blank=True, max_length=280)),
+                ('status', models.CharField(choices=[('S', 'sent'), ('A', 'accepted'), ('R', 'rejected')], default='S', max_length=1)),
             ],
             options={
                 'ordering': ['-created', '-modified'],
