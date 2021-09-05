@@ -44,3 +44,26 @@ mutation(
   }
 }
 """
+
+send_request_mutation = """
+mutation($to_user_id:ID!){
+  sendRequest(
+    input: {toUserId: $to_user_id}
+  ){
+    success,
+    errors{
+      fieldName,
+      messages
+    }
+    request{
+      sender{
+        username
+      },
+      receiver{
+        username
+      },
+      status
+    }    
+	}
+}
+"""

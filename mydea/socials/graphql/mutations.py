@@ -18,6 +18,7 @@ from .types import RequestNode
 
 # Models
 from mydea.socials.models import Request
+from mydea.users.models import User
 
 # Errors
 from mydea.utils.errors import Error, format_validation_errors
@@ -29,6 +30,43 @@ class Action(graphene.Enum):
     reject = 'R'
 
 # Request mutations
+
+class CreateRequestMutation(relay.ClientIDMutation):
+    """Request mutation for creating a request"""
+    request = graphene.Field(RequestNode)
+
+    class Input:        
+        to_user_id = graphene.ID(required=True)        
+
+    success = graphene.Boolean()
+    errors = graphene.List(Error)    
+
+    @login_required
+    def mutate_and_get_payload(root, info, to_user_id):
+        try:            
+            # Get sender user            
+            s_user = info.context.user  
+            # Get receiver user
+            r_user =  User.objects.get(
+                pk=from_global_id(to_user_id)[1]
+            )                             
+            # Create request object            
+            request = Request(
+                sender = s_user,
+                receiver = r_user         
+            )          
+            # Validate all fields
+            request.full_clean()
+            request.save()            
+
+            return CreateRequestMutation(success=True, request=request)
+
+        except ValidationError as e:
+            # Format all validations errors
+            errors = format_validation_errors(e)
+            return CreateRequestMutation(success=False, errors=errors)
+
+
 class UpdateRequestMutation(relay.ClientIDMutation):
     """Request mutation for accepting a follow request"""  
     request = graphene.Field(RequestNode) 
@@ -77,4 +115,5 @@ class UpdateRequestMutation(relay.ClientIDMutation):
 # Request mutations
 class RequestMutation(graphene.ObjectType):
     resolve_request = UpdateRequestMutation.Field()
+    send_request = CreateRequestMutation.Field()
 

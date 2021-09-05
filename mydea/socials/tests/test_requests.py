@@ -1,8 +1,5 @@
 """Request unit tests"""
 
-# Django
-from django.contrib.auth import get_user_model
-
 # Pytest
 import pytest
 
@@ -18,12 +15,13 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 
 # Models
 from mydea.socials.models import Request
-from mydea.users.models import Profile
+from mydea.users.models import Profile, User
 
 # Queries & Mutations
 from .qm_variables_requests import (
     my_requests_query,
     resolve_request_mutation,
+    send_request_mutation,
 )
 
 
@@ -44,6 +42,12 @@ class TestRequest(JSONWebTokenTestCase):
             sender = self.sender_user,
             receiver = self.receiver_user
         ) 
+        # Accepted request
+        Request.objects.create(
+            sender = mixer.blend(User),
+            receiver = self.receiver_user,
+            status = 'R'
+        ) 
 
     def test_my_requests_query(self):
         """Unit test for getting the sent requests to a 
@@ -53,14 +57,17 @@ class TestRequest(JSONWebTokenTestCase):
         self.client.authenticate(self.receiver_user)
 
         response = self.client.execute(my_requests_query)
-        request = response.data["myRequests"]["edges"][0]["node"]
+        request_arr = response.data["myRequests"]["edges"]
+        request = request_arr[0]["node"]
         sender = request["sender"]
         receiver = request["receiver"]
         status = request["status"]
-                             
+
+        # Only request with sent status are retrieved
+        self.assertEqual(len(request_arr), 1)                   
         self.assertEqual(sender["username"], self.sender_user.username)
         self.assertEqual(receiver["username"], self.receiver_user.username)
-        self.assertEqual(status, 'S') # sent by default
+        self.assertEqual(status, 'S') 
 
     def test_resolve_request_mutation(self):
         """Unit test for resolving(accept/reject) a request
@@ -106,3 +113,38 @@ class TestRequest(JSONWebTokenTestCase):
         self.assertTrue(success)
         self.assertIsNone(errors)
         self.assertEqual(status, 'R') # accepted
+
+    def test_send_request_mutation(self):
+        """Unit test for sending a follow request
+        to a authenticated user. By default, the
+        request status should be 'S' (sent)"""      
+
+        # first user (sender)
+        self.client.authenticate(self.sender_user)
+
+        response = self.client.execute(
+            send_request_mutation,
+            variables={
+                "to_user_id": to_global_id(
+                    'User', 
+                    self.receiver_user.id
+        )})       
+        success = response.data["sendRequest"]["success"]
+        errors = response.data["sendRequest"]["errors"]
+        request = response.data["sendRequest"]["request"]
+        sender = request["sender"]              
+        receiver = request["receiver"]              
+        status = request["status"]              
+
+        self.assertTrue(success)
+        self.assertIsNone(errors)    
+        self.assertEqual(
+            sender["username"], 
+            self.sender_user.username
+        )   
+        self.assertEqual(
+            receiver["username"], 
+            self.receiver_user.username
+        )  
+        self.assertEqual(status, 'S')
+        
