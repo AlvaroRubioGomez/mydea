@@ -1,14 +1,30 @@
 """User graphql mutations"""
 
+# Django
+from django.core.exceptions import (
+    ValidationError,    
+)
+
 # Graphene
 import graphene
+from graphene import relay
+from graphql_relay import from_global_id
 
 # Graphql-auth
 from graphql_auth import mutations
+from graphql_jwt.decorators import login_required
 
 # Models
 from mydea.users.models import User, Profile
 
+# Types
+from .types import ProfileNode
+
+# Errors
+from mydea.utils.errors import Error, format_validation_errors
+
+
+# Auth mutations
 
 class AutoVerificationRegister(mutations.Register):
     """
@@ -59,7 +75,6 @@ class AutoVerificationRegister(mutations.Register):
         return response
 
 
-# Auth mutations
 class AuthMutation(graphene.ObjectType):
     register = AutoVerificationRegister.Field() #override register
     login = mutations.ObtainJSONWebToken.Field()
@@ -68,3 +83,35 @@ class AuthMutation(graphene.ObjectType):
     password_reset = mutations.PasswordReset.Field()
 
 
+# Profile mutations
+
+class DeleteFollowingMutation(relay.ClientIDMutation):
+    """Post mutation for deleting a user's following 
+    (i.e stop following a user)"""    
+
+    class Input:     
+        user_id = graphene.ID(required=True)               
+
+    success = graphene.Boolean()
+    errors = graphene.List(Error)    
+
+    @login_required
+    # @is_post_owner
+    def mutate_and_get_payload(root, info, user_id):
+        #try:        
+        # Get request user
+        user = info.context.user
+        # Get following user            
+        f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
+        # Delete f_user from user's following         
+        user.profile.following.remove(f_user)
+        user.save()
+        # Delete user from f_user's followers        
+        f_user.profile.followers.remove(user)  
+        f_user.save()   
+
+        return DeleteFollowingMutation(success=True)           
+      
+
+class ProfileMutation(graphene.ObjectType):
+    delete_following = DeleteFollowingMutation.Field()

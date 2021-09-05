@@ -26,3 +26,19 @@ query{
   }
 }
 """
+
+# Mutations
+
+delete_following_mutation = """
+mutation($user_id:ID!){
+  deleteFollowing(
+    input:{userId: $user_id}
+  ){
+    success, 
+    errors{
+      fieldName,
+      messages
+    }
+  }
+}
+"""

@@ -7,11 +7,11 @@ import graphene
 # from graphql_auth.schema import UserQuery
 
 # Queries
-from mydea.posts.graphql.queries import PostsQuery
 from mydea.users.graphql.queries import UsersQuery, ProfileQueries
+from mydea.posts.graphql.queries import PostsQuery
 
 # Mutations
-from mydea.users.graphql.mutations import AuthMutation
+from mydea.users.graphql.mutations import AuthMutation, ProfileMutation
 from mydea.posts.graphql.mutations import PostMutation
 
 
@@ -25,6 +25,7 @@ class Query(
 class Mutation(
     AuthMutation,  
     PostMutation, 
+    ProfileMutation,
     graphene.ObjectType):
     pass
 
