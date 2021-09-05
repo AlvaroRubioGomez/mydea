@@ -42,3 +42,17 @@ mutation($user_id:ID!){
   }
 }
 """
+
+delete_followers_mutation = """
+mutation($user_id:ID!){
+  deleteFollowers(
+    input:{userId: $user_id}
+  ){
+    success, 
+    errors{
+      fieldName,
+      messages
+    }
+  }
+}
+"""
