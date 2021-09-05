@@ -24,6 +24,7 @@ from .qm_variables_profiles import (
   following_query, 
   followers_query, 
   delete_following_mutation,
+  delete_followers_mutation,
 )
 
 
@@ -92,7 +93,7 @@ class TestProfile(JSONWebTokenTestCase):
             self.assertTrue(res_username in followers_usernames)
 
 
-    def test_following_query(self):
+    def test_delete_following_mutation(self):
         """Unit test for deleting following user of an 
         authenticated user"""       
 
@@ -130,4 +131,44 @@ class TestProfile(JSONWebTokenTestCase):
         ]   
         self.assertTrue(
             first_auth_user.username not in followers_usernames
+        )
+
+    def test_delete_followers_mutation(self):
+        """Unit test for deleting followers user of an 
+        authenticated user"""       
+
+        # First user
+        first_auth_user = self.auth_users[0]
+        # Second user 
+        second_auth_user = self.auth_users[1] 
+        
+        self.client.authenticate(first_auth_user)        
+        response = self.client.execute(
+            delete_followers_mutation,
+            variables={
+                "user_id": to_global_id('User', second_auth_user.id)
+        })
+        success = response.data["deleteFollowers"]["success"] 
+        errors = response.data["deleteFollowers"]["errors"] 
+             
+        # Check success
+        self.assertTrue(success) 
+        self.assertIsNone(errors) 
+        # Check remaining users
+        remain_user_amount = len(first_auth_user.profile.followers.all())        
+        # Check second user no longer in first user followers
+        followers_usernames = [ 
+            first_auth_user.profile.followers.all()[i].username
+            for i in range(remain_user_amount)
+        ]   
+        self.assertTrue(
+            second_auth_user.username not in followers_usernames
+        )
+        # Check first user no longer in second user following
+        following_usernames = [ 
+            second_auth_user.profile.following.all()[i].username
+            for i in range(remain_user_amount)
+        ]   
+        self.assertTrue(
+            first_auth_user.username not in following_usernames
         )
