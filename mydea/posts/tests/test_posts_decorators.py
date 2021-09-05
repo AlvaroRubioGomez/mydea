@@ -13,8 +13,8 @@ from graphene.test import Client
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 # Models
-from mydea.users.models.users import User
-from mydea.posts.models.posts import Post
+from mydea.users.models import User, Profile
+from mydea.posts.models import Post
 
 # Queries & Mutations
 from .posts_qm_variables import (
@@ -36,7 +36,8 @@ class TestPostDecorators(JSONWebTokenTestCase):
         self.auth_posts = []
         for _ in range(2):
             # Authenticated user       
-            self.auth_user = mixer.blend(User)          
+            profile = mixer.blend(Profile)
+            self.auth_user = profile.user                   
             self.client.authenticate(self.auth_user)        
 
             # Posts

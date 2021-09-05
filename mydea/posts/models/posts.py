@@ -15,20 +15,18 @@ class Post(MyDeaModel):
         + protected: Only user followers can see it
         + private: Only the owner can see it"""
 
-    created_by = models.ForeignKey('users.User', on_delete=models.CASCADE)
-
-    PUBLIC = 'PB'
-    PROTECTED = 'PT'
-    PRIVATE = 'PV'
     VISIBILITY_CHOICES = [
-        (PUBLIC, 'public'),
-        (PROTECTED, 'protected'),
-        (PRIVATE, 'private')
+        ('PB', 'public'),
+        ('PT', 'protected'),
+        ('PV', 'private')
     ]
+
+    created_by = models.ForeignKey('users.Profile', on_delete=models.CASCADE)  
+   
     visibility = models.CharField(
         max_length=2,
         choices=VISIBILITY_CHOICES,
-        default=PUBLIC,
+        default='PB',
         blank=True,
         null=True
     )
@@ -38,4 +36,4 @@ class Post(MyDeaModel):
 
     def __str__(self):
         """Return user's str representation."""
-        return str(self.created_by)
+        return str(self.created_by.user.username)

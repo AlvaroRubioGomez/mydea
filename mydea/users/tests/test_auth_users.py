@@ -16,10 +16,10 @@ from graphene.test import Client
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 # Models
-from mydea.users.models.users import User
+from mydea.users.models import User
 
 # Queries & Mutations
-from .users_qm_variables import (
+from .qm_variables_users import (
   users_query,
   register_mutation,
   login_mutation,

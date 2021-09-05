@@ -21,12 +21,26 @@ class ProfileAdmin(admin.ModelAdmin):
     """Profile model admin."""
 
     model = Profile
-    list_display = ['get_username']
+    list_display = [
+        'get_username',
+        'get_following',
+        'get_followers',
+    ]
 
     def get_username(self, obj):
         return obj.user.username
     get_username.admin_order_field = 'user'
     get_username.short_description = 'Username'
+
+    def get_following(self, obj):        
+        return list(obj.following.all())
+    get_following.admin_order_field = 'user'
+    get_following.short_description = 'Following'
+
+    def get_followers(self, obj):        
+        return list(obj.followers.all())
+    get_followers.admin_order_field = 'user'
+    get_followers.short_description = 'Followers'
 
     # search_fields = ('user__username', 'user__email')
     # list_filter = ('posts__visibility',)

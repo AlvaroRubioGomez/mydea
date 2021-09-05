@@ -2,7 +2,7 @@
 
 # Django
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+# from django.contrib.auth.admin import UserAdmin
 from django.apps import apps
 
 # Models
@@ -13,8 +13,7 @@ class PostAdmin(admin.ModelAdmin):
     """Post model admin."""
 
     model = Post
-    list_display = (
-        'id', 
+    list_display = (        
         'get_username', 
         'body', 
         'visibility', 
@@ -22,11 +21,13 @@ class PostAdmin(admin.ModelAdmin):
     )
 
     def get_username(self, obj):
-        return obj.created_by.username
+        return obj.created_by.user.username
     get_username.admin_order_field = 'user'
     get_username.short_description = 'Username'
 
-    search_fields = ('user__username', 'user__email')
+    search_fields = (
+        'profile__user__username', 
+        'profile__user__email')
     list_filter = ('visibility',)
 
 admin.site.register(Post, PostAdmin)

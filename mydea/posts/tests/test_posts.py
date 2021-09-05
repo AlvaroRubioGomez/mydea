@@ -16,8 +16,8 @@ from graphql_jwt.testcases import JSONWebTokenTestCase
 from mydea.utils.datetime import datetime_str_to_int
 
 # Models
-from mydea.users.models.users import User
-from mydea.posts.models.posts import Post
+from mydea.users.models import User, Profile
+from mydea.posts.models import Post
 
 # Queries & Mutations
 from .posts_qm_variables import (
@@ -32,9 +32,10 @@ class TestPost(JSONWebTokenTestCase):
     """Post test case"""
 
     def setUp(self):  
-        # Authenticated user        
-        self.auth_user = mixer.blend(User)          
-        self.client.authenticate(self.auth_user)
+        # Authenticated user           
+        profile = mixer.blend(Profile)
+        self.auth_user = profile.user                   
+        self.client.authenticate(self.auth_user)       
 
         # Post data
         self.wrong_visibility = "PR"
@@ -74,12 +75,12 @@ class TestPost(JSONWebTokenTestCase):
             variables={
                 "body": self.post_data["body"],
                 "visibility": self.post_data["visibility"]
-        })        
+        })            
         create_post = response.data["createPost"]
         success = create_post["success"]
         errors = create_post["errors"]
         post = create_post["post"]
-        created_by = post["createdBy"]
+        created_by = post["createdBy"]["user"]        
 
         self.assertTrue(success)
         self.assertIsNone(errors)    
@@ -145,7 +146,7 @@ class TestPost(JSONWebTokenTestCase):
             res_created_by = post["node"]["createdBy"]
 
             # Get all posts created by username and created values
-            created_by_arr.append(res_created_by["username"])
+            created_by_arr.append(res_created_by["user"]["username"])
             created_arr.append(datetime_str_to_int(res_created))            
             
             # Check auth posts and response posts match
@@ -153,7 +154,7 @@ class TestPost(JSONWebTokenTestCase):
         
         # Check only auth user posts
         self.assertEqual(
-            created_by_arr.count(self.auth_user.username),
+            created_by_arr.count(self.auth_user.username),            
             self.auth_posts_amount)
 
         # Check descending order created (most recent first)
@@ -205,22 +206,4 @@ class TestPost(JSONWebTokenTestCase):
         self.assertEqual(
             len(post_collection), 
             self.auth_posts_amount - 1
-        )
-        
-
-        
-    
-
-            
-
-        
-
-
-
-
-
-    
-
-    
-
-                  
+        ) 

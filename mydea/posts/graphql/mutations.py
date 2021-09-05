@@ -46,11 +46,11 @@ class CreatePostMutation(relay.ClientIDMutation):
             # This ensures default visibility value from model (PB - Public)
             if "visibility" in input_data and input_data["visibility"] is None: 
                 input_data.pop("visibility") 
-            # Get user
-            user = info.context.user                      
+            # Get profile            
+            profile = info.context.user.profile                                 
             # Create post object            
             post = Post(
-                created_by = user,
+                created_by = profile,
                 **input_data          
             )          
             # Validate all fields
