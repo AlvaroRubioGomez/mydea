@@ -1,5 +1,4 @@
-MyDea
-=====
+# MyDea
 
 This is MyDea, a solution to the django backend technical test from Z1 Digital presented by Alvaro Rubio Gomez
 
