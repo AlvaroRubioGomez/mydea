@@ -43,15 +43,18 @@ class PostsQuery(graphene.ObjectType):
         # Get user by id
         user = User.objects.get(pk=from_global_id(u_id)[1])
         # Get user's followers
-        followers = user.profile.followers        
+        followers = user.profile.followers               
         # Get user posts
         if(user == request_user):
             user_posts = Post.objects.filter(created_by=user.profile).all()
-        elif(followers.filter(id=request_user.id).exists()): # request user is a follower
+
+        is_follower = followers.filter(id=request_user.id).exists() 
+        if(is_follower): # request user is a follower
             user_posts = Post.objects.filter(
                 Q(created_by=user.profile) &
-                Q(visibility='PB') | Q(visibility='PT')
+                (Q(visibility='PB') | Q(visibility='PT'))
             ).all()
+            #import pdb; pdb.set_trace() 
         else:
             user_posts = Post.objects.filter(
                 created_by=user.profile,
@@ -74,8 +77,8 @@ class PostsQuery(graphene.ObjectType):
             | Q(created_by__in=[user.profile for user in following.all()]) 
                 & Q(visibility='PT') 
             # Get all user's privates and protected posts          
-            | Q(created_by=user.profile) & Q(visibility='PV') 
-                | Q(visibility='PT')           
+            | Q(created_by=user.profile) & 
+            (Q(visibility='PV') | Q(visibility='PT'))          
         ).all()      
 
         return all_posts 

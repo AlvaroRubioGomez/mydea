@@ -25,10 +25,12 @@ query($uId: ID!){
   userPosts(uId: $uId){
     edges{
       node{
+        created,
         visibility,
         body,
         createdBy{
           user{
+            username,
             id
           }
         }
@@ -38,7 +40,7 @@ query($uId: ID!){
 }
 """
 
-all_posts = """
+all_posts_query = """
 query{
   allPosts{
     edges{
