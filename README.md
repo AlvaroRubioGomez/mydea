@@ -2,7 +2,7 @@
 
 This is MyDea, a solution to the django backend technical test from Z1 Digital presented by Alvaro Rubio Gomez
 
-<a href="https://github.com/pydanny/cookiecutter-django/"">
+<a href="https://github.com/pydanny/cookiecutter-django/">
 <img src="https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter"     
      alt="Built with Cookiecutter Django" /></a>
 
