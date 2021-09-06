@@ -20,6 +20,24 @@ query{
 }
 """
 
+user_posts_query = """
+query($uId: ID!){
+  userPosts(uId: $uId){
+    edges{
+      node{
+        visibility,
+        body,
+        createdBy{
+          user{
+            id
+          }
+        }
+      }
+    }
+  }
+}
+"""
+
 # Mutations
 
 create_post_mutation = """

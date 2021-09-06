@@ -20,11 +20,12 @@ from mydea.users.models import User, Profile
 from mydea.posts.models import Post
 
 # Queries & Mutations
-from .qm_variables_posts import (
-  create_post_mutation,
+from .qm_variables_posts import (  
   my_posts_query,
+  user_posts_query,
+  create_post_mutation,  
   edit_visibility_mutation,
-  delete_post_mutation,
+  delete_post_mutation,  
 )
 
 @pytest.mark.django_db
