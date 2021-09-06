@@ -20,7 +20,7 @@ from mydea.users.models import User
 
 # Queries & Mutations
 from .qm_variables_users import (
-  users_query,
+  find_users_query,
   register_mutation,
   login_mutation,
   password_change_mutation
@@ -50,11 +50,11 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.client.authenticate(self.registered_user)                   
 
 
-    def test_users_query(self):
+    def test_find_users_query(self):
         """Unit test for retrieving all users"""
 
-        response = self.client.execute(users_query)        
-        users = response.data["users"]["edges"]
+        response = self.client.execute(find_users_query)               
+        users = response.data["findUsers"]["edges"]
         first_user = users[0]["node"] 
 
         self.assertEqual(len(users), 3)        

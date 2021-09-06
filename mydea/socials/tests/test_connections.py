@@ -1,4 +1,4 @@
-"""Profile unit tests"""
+"""Connections unit tests"""
 
 # Django
 from django.contrib.auth import get_user_model
@@ -17,51 +17,54 @@ from graphql_relay import to_global_id
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 # Models
-from mydea.users.models import Profile
+from mydea.users.models import Profile, User
+from mydea.socials.models import Connection
 
 # Queries & Mutations
-from .qm_variables_profiles import (
-  following_query, 
-  followers_query, 
+from .qm_variables_connections import (
+  my_following_query, 
+  my_followers_query, 
   delete_following_mutation,
   delete_followers_mutation,
 )
 
 
 @pytest.mark.django_db
-class TestProfile(JSONWebTokenTestCase): 
-    """Profile test case"""
+class TestConnection(JSONWebTokenTestCase): 
+    """Connection test case"""
 
     def setUp(self):  
         # Authenticated users  
         self.auth_users = []
         self.users_amount = 3
-        for _ in range(self.users_amount):                    
-            profile = mixer.blend(Profile)
-            self.auth_users.append(profile.user)             
+        for _ in range(self.users_amount):           
+            user = mixer.blend(User)             
+            profile = mixer.blend(Profile, user=user)
+            connection = mixer.blend(Connection, user=user)
+            self.auth_users.append(user)             
          
         # Follow and get followed by each other
         for i in range(self.users_amount):
             for j in range(self.users_amount-1):
                 # Add following and followers the other users by traversing backwards
-                self.auth_users[i].profile.following.add(self.auth_users[i-j-1])
-                self.auth_users[i].profile.followers.add(self.auth_users[i-j-1])
+                self.auth_users[i].connection.following.add(self.auth_users[i-j-1])
+                self.auth_users[i].connection.followers.add(self.auth_users[i-j-1])
 
         
-    def test_following_query(self):
+    def test_my_following_query(self):
         """Unit test for getting the following of authenticated
         user."""       
 
         # First user
         first_auth_user = self.auth_users[0]        
         following_usernames = [ 
-            first_auth_user.profile.following.all()[i].username
+            first_auth_user.connection.following.all()[i].username
             for i in range(self.users_amount-1)
         ]   
         
         self.client.authenticate(first_auth_user)
-        response = self.client.execute(following_query)
-        res_following_arr = response.data["following"]["edges"] 
+        response = self.client.execute(my_following_query)
+        res_following_arr = response.data["myFollowing"]["edges"] 
         
         # Check right amount of following users
         self.assertEqual(len(res_following_arr), self.users_amount-1)        
@@ -70,20 +73,20 @@ class TestProfile(JSONWebTokenTestCase):
             res_username = following_user["node"]["username"]                      
             self.assertTrue(res_username in following_usernames)
 
-    def test_followers_query(self):
+    def test_my_followers_query(self):
         """Unit test for getting the followers of authenticated
         user."""       
 
         # First user
         first_auth_user = self.auth_users[0]        
         followers_usernames = [ 
-            first_auth_user.profile.followers.all()[i].username
+            first_auth_user.connection.followers.all()[i].username
             for i in range(self.users_amount-1)
         ]   
         
         self.client.authenticate(first_auth_user)
-        response = self.client.execute(followers_query)
-        res_followers_arr = response.data["followers"]["edges"] 
+        response = self.client.execute(my_followers_query)
+        res_followers_arr = response.data["myFollowers"]["edges"] 
         
         # Check right amount of followers users
         self.assertEqual(len(res_followers_arr), self.users_amount-1)        
@@ -115,10 +118,10 @@ class TestProfile(JSONWebTokenTestCase):
         self.assertTrue(success) 
         self.assertIsNone(errors) 
         # Check remaining users
-        remain_user_amount = len(first_auth_user.profile.following.all())        
+        remain_user_amount = len(first_auth_user.connection.following.all())        
         # Check second user no longer in first user following
         following_usernames = [ 
-            first_auth_user.profile.following.all()[i].username
+            first_auth_user.connection.following.all()[i].username
             for i in range(remain_user_amount)
         ]   
         self.assertTrue(
@@ -126,7 +129,7 @@ class TestProfile(JSONWebTokenTestCase):
         )
         # Check first user no longer in second user followers
         followers_usernames = [ 
-            second_auth_user.profile.followers.all()[i].username
+            second_auth_user.connection.followers.all()[i].username
             for i in range(remain_user_amount)
         ]   
         self.assertTrue(
@@ -155,10 +158,10 @@ class TestProfile(JSONWebTokenTestCase):
         self.assertTrue(success) 
         self.assertIsNone(errors) 
         # Check remaining users
-        remain_user_amount = len(first_auth_user.profile.followers.all())        
+        remain_user_amount = len(first_auth_user.connection.followers.all())        
         # Check second user no longer in first user followers
         followers_usernames = [ 
-            first_auth_user.profile.followers.all()[i].username
+            first_auth_user.connection.followers.all()[i].username
             for i in range(remain_user_amount)
         ]   
         self.assertTrue(
@@ -166,7 +169,7 @@ class TestProfile(JSONWebTokenTestCase):
         )
         # Check first user no longer in second user following
         following_usernames = [ 
-            second_auth_user.profile.following.all()[i].username
+            second_auth_user.connection.following.all()[i].username
             for i in range(remain_user_amount)
         ]   
         self.assertTrue(

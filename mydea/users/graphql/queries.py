@@ -14,20 +14,20 @@ from .types import CustomUserNode
 
 # User queries
 class UsersQuery(graphene.ObjectType): 
-    users = DjangoFilterConnectionField(CustomUserNode)  
+    find_users = DjangoFilterConnectionField(CustomUserNode)  
 
-# Profile queries
-class ProfileQueries(graphene.ObjectType):
-    following = DjangoFilterConnectionField(CustomUserNode)
-    followers = DjangoFilterConnectionField(CustomUserNode)
+# # Profile queries
+# class ProfileQueries(graphene.ObjectType):
+#     following = DjangoFilterConnectionField(CustomUserNode)
+#     followers = DjangoFilterConnectionField(CustomUserNode)
 
-    @login_required    
-    def resolve_following(root, info):       
-        user = info.context.user     
-        return user.profile.following.all()      
+#     @login_required    
+#     def resolve_following(root, info):       
+#         user = info.context.user     
+#         return user.profile.following.all()      
     
-    @login_required    
-    def resolve_followers(root, info):       
-        user = info.context.user     
-        return user.profile.followers.all()   
+#     @login_required    
+#     def resolve_followers(root, info):       
+#         user = info.context.user     
+#         return user.profile.followers.all()   
         

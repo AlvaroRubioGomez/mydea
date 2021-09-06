@@ -16,9 +16,10 @@ from graphql_jwt.decorators import login_required
 
 # Models
 from mydea.users.models import User, Profile
+from mydea.socials.models import Connection
 
-# Types
-from .types import ProfileNode
+# # Types
+# from .types import ProfileNode
 
 # Errors
 from mydea.utils.errors import Error, format_validation_errors
@@ -70,7 +71,10 @@ class AutoVerificationRegister(mutations.Register):
             user.status.save(update_fields=["verified"])    
             # Create profile with user
             profile = Profile.objects.create(user=user) 
-            profile.save()   
+            profile.save()  
+            # Create empty connection for user
+            connection = Connection.objects.create(user=user)
+            connection.save()
         
         return response
 
@@ -83,62 +87,62 @@ class AuthMutation(graphene.ObjectType):
     password_reset = mutations.PasswordReset.Field()
 
 
-# Profile mutations
+# # Profile mutations
 
-class DeleteFollowingMutation(relay.ClientIDMutation):
-    """Post mutation for deleting a user's following 
-    (i.e stop following a user)"""    
+# class DeleteFollowingMutation(relay.ClientIDMutation):
+#     """Post mutation for deleting a user's following 
+#     (i.e stop following a user)"""    
 
-    class Input:     
-        user_id = graphene.ID(required=True)               
+#     class Input:     
+#         user_id = graphene.ID(required=True)               
 
-    success = graphene.Boolean()
-    errors = graphene.List(Error)    
+#     success = graphene.Boolean()
+#     errors = graphene.List(Error)    
 
-    @login_required  
-    def mutate_and_get_payload(root, info, user_id):
-        #try:        
-        # Get request user
-        user = info.context.user
-        # Get following user            
-        f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
-        # Delete f_user from user's following         
-        user.profile.following.remove(f_user)
-        user.save()
-        # Delete user from f_user's followers        
-        f_user.profile.followers.remove(user)  
-        f_user.save()   
+#     @login_required  
+#     def mutate_and_get_payload(root, info, user_id):
+#         #try:        
+#         # Get request user
+#         user = info.context.user
+#         # Get following user            
+#         f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
+#         # Delete f_user from user's following         
+#         user.profile.following.remove(f_user)
+#         user.save()
+#         # Delete user from f_user's followers        
+#         f_user.profile.followers.remove(user)  
+#         f_user.save()   
 
-        return DeleteFollowingMutation(success=True)    
+#         return DeleteFollowingMutation(success=True)    
 
 
-class DeleteFollowersMutation(relay.ClientIDMutation):
-    """Post mutation for deleting a user's follower 
-    (i.e a user stops following you)"""    
+# class DeleteFollowersMutation(relay.ClientIDMutation):
+#     """Post mutation for deleting a user's follower 
+#     (i.e a user stops following you)"""    
 
-    class Input:     
-        user_id = graphene.ID(required=True)               
+#     class Input:     
+#         user_id = graphene.ID(required=True)               
 
-    success = graphene.Boolean()
-    errors = graphene.List(Error)    
+#     success = graphene.Boolean()
+#     errors = graphene.List(Error)    
 
-    @login_required    
-    def mutate_and_get_payload(root, info, user_id):
-        #try:        
-        # Get request user
-        user = info.context.user
-        # Get follower user            
-        f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
-        # Delete f_user from user's followers         
-        user.profile.followers.remove(f_user)
-        user.save()
-        # Delete user from f_user's followings        
-        f_user.profile.following.remove(user)  
-        f_user.save()   
+#     @login_required    
+#     def mutate_and_get_payload(root, info, user_id):
+#         #try:        
+#         # Get request user
+#         user = info.context.user
+#         # Get follower user            
+#         f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
+#         # Delete f_user from user's followers         
+#         user.profile.followers.remove(f_user)
+#         user.save()
+#         # Delete user from f_user's followings        
+#         f_user.profile.following.remove(user)  
+#         f_user.save()   
 
-        return DeleteFollowersMutation(success=True)         
+#         return DeleteFollowersMutation(success=True)         
       
 
-class ProfileMutation(graphene.ObjectType):
-    delete_following = DeleteFollowingMutation.Field()
-    delete_followers = DeleteFollowersMutation.Field()
+# class ProfileMutation(graphene.ObjectType):
+#     delete_following = DeleteFollowingMutation.Field()
+#     delete_followers = DeleteFollowersMutation.Field()

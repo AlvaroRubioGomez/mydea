@@ -16,12 +16,7 @@ from mydea.socials.models import Request
 # Request types
 class RequestNode(DjangoObjectType):
     class Meta:
-        model = Request        
+        model = Request               
         filter_fields = []
-        interfaces = (relay.Node, )    
-    
-    @classmethod
-    @login_required
-    def get_queryset(cls, queryset, info):
-        user = info.context.user        
-        return queryset.filter(receiver=user)
+        interfaces = (relay.Node, )      
+  

@@ -3,24 +3,27 @@
 # Graphene
 import graphene
 
-# Django-graphql-auth
-# from graphql_auth.schema import UserQuery
-
 # Queries
-from mydea.users.graphql.queries import UsersQuery, ProfileQueries
+from mydea.users.graphql.queries import UsersQuery
 from mydea.posts.graphql.queries import PostsQuery
-from mydea.socials.graphql.queries import RequestsQuery
+from mydea.socials.graphql.queries import (
+    RequestsQuery, 
+    ConnectionQuery
+)
 
 # Mutations
-from mydea.users.graphql.mutations import AuthMutation, ProfileMutation
+from mydea.users.graphql.mutations import AuthMutation
 from mydea.posts.graphql.mutations import PostMutation
-from mydea.socials.graphql.mutations import RequestMutation
+from mydea.socials.graphql.mutations import (
+    RequestMutation,
+    ConnectionMutation
+)
 
 
 class Query(   
     UsersQuery,
     PostsQuery,
-    ProfileQueries,
+    ConnectionQuery,
     RequestsQuery,
     graphene.ObjectType):
     pass
@@ -28,7 +31,7 @@ class Query(
 class Mutation(
     AuthMutation,  
     PostMutation, 
-    ProfileMutation,
+    ConnectionMutation,
     RequestMutation,
     graphene.ObjectType):
     pass

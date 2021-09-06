@@ -18,7 +18,9 @@ class CustomUserNode(DjangoObjectType):
             'is_superuser',
             'is_staff',
             'is_active',
-            'date_joined'
+            'date_joined',
+            'sender',
+            'receiver'
         ]
         filter_fields = {
             'username': ['exact', 'icontains']
@@ -29,5 +31,6 @@ class CustomUserNode(DjangoObjectType):
 class ProfileNode(DjangoObjectType):
     class Meta:
         model = Profile
+        exclude = ['post_set']
         filter_fields = []
         interfaces = (relay.Node, )

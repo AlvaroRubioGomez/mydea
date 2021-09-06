@@ -21,8 +21,8 @@ query{
 """
 
 user_posts_query = """
-query($uId: ID!){
-  userPosts(uId: $uId){
+query($userId: ID!){
+  userPosts(userId: $userId){
     edges{
       node{
         created,

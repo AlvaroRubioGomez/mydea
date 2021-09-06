@@ -31,7 +31,7 @@ class Post(MyDeaModel):
         null=True
     )
 
-    body = models.CharField(max_length=280, blank=True)   
+    body = models.CharField(max_length=280, blank=False)   
     
 
     def __str__(self):
