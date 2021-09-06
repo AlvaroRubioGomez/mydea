@@ -12,10 +12,10 @@ from graphql_jwt.decorators import login_required
 
 # Models
 from mydea.posts.models import Post
-from mydea.users.models import Profile
+# from mydea.users.models import Profile
+from mydea.users.models import User
 
 # Types
-# from mydea.users.graphql.types import CustomUserNode
 from mydea.users.graphql.types import ProfileNode
 
 # Post types
@@ -23,24 +23,6 @@ class PostNode(DjangoObjectType):
     class Meta:
         model = Post        
         filter_fields = []
-        interfaces = (relay.Node, ) 
+        interfaces = (relay.Node, )   
     
-    #created_by = graphene.Field(CustomUserNode)
     created_by = graphene.Field(ProfileNode)
-
-    @classmethod
-    @login_required
-    def get_queryset(cls, queryset, info):
-        profile = info.context.user.profile        
-        return queryset.filter(created_by=profile)
-
-
-
-
-
-
-
-
-
-
-   
