@@ -24,7 +24,7 @@ class PostsQuery(graphene.ObjectType):
     my_posts = DjangoFilterConnectionField(PostNode)
     user_posts = DjangoFilterConnectionField(
         PostNode,
-        u_id = graphene.ID(required=True)
+        user_id = graphene.ID(required=True)
     ) 
     all_posts = DjangoFilterConnectionField(PostNode)
     
@@ -37,13 +37,13 @@ class PostsQuery(graphene.ObjectType):
         return my_posts
 
     @login_required    
-    def resolve_user_posts(root, info, u_id):
+    def resolve_user_posts(root, info, user_id):
         # Get current user
         request_user = info.context.user        
         # Get user by id
-        user = User.objects.get(pk=from_global_id(u_id)[1])
+        user = User.objects.get(pk=from_global_id(user_id)[1])
         # Get user's followers
-        followers = user.profile.followers               
+        followers = user.connection.followers               
         # Get user posts
         if(user == request_user):
             user_posts = Post.objects.filter(created_by=user.profile).all()
@@ -68,7 +68,7 @@ class PostsQuery(graphene.ObjectType):
         # Get current user
         user = info.context.user        
         # Get user's following
-        following = user.profile.following             
+        following = user.connection.following             
         # Get user's and following user's posts
         all_posts = Post.objects.filter(
             # Get all publics posts

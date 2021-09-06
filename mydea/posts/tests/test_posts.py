@@ -19,6 +19,7 @@ from mydea.utils.datetime import datetime_str_to_int
 # Models
 from mydea.users.models import User, Profile
 from mydea.posts.models import Post
+from mydea.socials.models import Connection
 
 # Queries & Mutations
 from .qm_variables_posts import (  
@@ -34,20 +35,22 @@ from .qm_variables_posts import (
 class TestPost(JSONWebTokenTestCase): 
     """Post test case"""
 
-    def setUp(self):  
+    def setUp(self):        
         # Authenticated users  
         self.auth_users = []
         self.users_amount = 2
         for _ in range(self.users_amount):                    
-            profile = mixer.blend(Profile)
-            self.auth_users.append(profile.user)             
+            user = mixer.blend(User)             
+            profile = mixer.blend(Profile, user=user)
+            connection = mixer.blend(Connection, user=user)                   
+            self.auth_users.append(user)      
          
         # Follow and get followed by each other
         for i in range(self.users_amount):
             for j in range(self.users_amount-1):
                 # Add following and followers the other users by traversing backwards
-                self.auth_users[i].profile.following.add(self.auth_users[i-j-1])
-                self.auth_users[i].profile.followers.add(self.auth_users[i-j-1])
+                self.auth_users[i].connection.following.add(self.auth_users[i-j-1])
+                self.auth_users[i].connection.followers.add(self.auth_users[i-j-1])
         
         # Posts
         # Post data
@@ -136,13 +139,12 @@ class TestPost(JSONWebTokenTestCase):
         # Second user
         snd_user = self.auth_users[1]
 
-        self.client.authenticate(fst_user)
+        self.client.authenticate(fst_user)        
         response = self.client.execute(
             user_posts_query,
             variables={
-                "uId": to_global_id('User', snd_user.id)
-        })
-        #import pdb; pdb.set_trace() 
+                "userId": to_global_id('User', snd_user.id)
+        })           
         snd_user_posts = response.data["userPosts"]["edges"]      
 
         for i, post in enumerate(snd_user_posts):           
@@ -192,7 +194,7 @@ class TestPost(JSONWebTokenTestCase):
         response = self.client.execute(
             user_posts_query,
             variables={
-                "uId": to_global_id('User', snd_user.id)
+                "userId": to_global_id('User', snd_user.id)
         })        
         snd_user_posts = response.data["userPosts"]["edges"]      
 
@@ -242,8 +244,8 @@ class TestPost(JSONWebTokenTestCase):
         snd_user = self.auth_users[1]
 
         self.client.authenticate(fst_user)
-        response = self.client.execute(all_posts_query)         
-        all_posts = response.data["allPosts"]["edges"]      
+        response = self.client.execute(all_posts_query)               
+        all_posts = response.data["allPosts"]["edges"]        
 
         for post in all_posts:
             # Get response post data            

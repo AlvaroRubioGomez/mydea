@@ -1,9 +1,9 @@
-"""Profile queries and mutations variables"""
+"""Connections queries and mutations variables"""
 
 # Queries
-following_query = """
+my_following_query = """
 query{
-  following{
+  myFollowing{
     edges{
       node{
         username,
@@ -14,9 +14,9 @@ query{
 }
 """
 
-followers_query = """
+my_followers_query = """
 query{
-  followers{
+  myFollowers{
     edges{
       node{
         username,

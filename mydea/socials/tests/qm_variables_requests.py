@@ -25,12 +25,12 @@ query{
 
 resolve_request_mutation = """
 mutation(
-  $r_id:ID!,
+  $request_id:ID!,
 	$action: Action!
 ){
   resolveRequest(
     input:{
-      rId:$r_id,
+      requestId:$request_id,
       action: $action
     }){
     success,

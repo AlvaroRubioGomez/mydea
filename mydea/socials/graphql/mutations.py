@@ -72,29 +72,29 @@ class UpdateRequestMutation(relay.ClientIDMutation):
     request = graphene.Field(RequestNode) 
 
     class Input:     
-        r_id = graphene.ID(required=True) 
+        request_id = graphene.ID(required=True) 
         action = Action(required=True)              
 
     success = graphene.Boolean()
     errors = graphene.List(Error)    
 
     @login_required  
-    def mutate_and_get_payload(root, info, r_id, action):
+    def mutate_and_get_payload(root, info, request_id, action):
         try:
             # Get user
             user = info.context.user
             # Get request
-            request = Request.objects.get(pk=from_global_id(r_id)[1])
+            request = Request.objects.get(pk=from_global_id(request_id)[1])
 
             # Accept request
             if action == 'A':  
                 # Update status
                 request.status = 'A' 
                 # Add sender to user's followers 
-                user.profile.followers.add(request.sender)
+                user.connection.followers.add(request.sender)
                 user.save()
                 # Add user to receiver's following
-                request.sender.profile.following.add(user)
+                request.sender.connection.following.add(user)
                 user.save()
 
             # Reject request
@@ -116,4 +116,65 @@ class UpdateRequestMutation(relay.ClientIDMutation):
 class RequestMutation(graphene.ObjectType):
     resolve_request = UpdateRequestMutation.Field()
     send_request = CreateRequestMutation.Field()
+
+
+# Connections mutations
+
+class DeleteFollowingMutation(relay.ClientIDMutation):
+    """Post mutation for deleting a user's following 
+    (i.e stop following a user)"""    
+
+    class Input:     
+        user_id = graphene.ID(required=True)               
+
+    success = graphene.Boolean()
+    errors = graphene.List(Error)    
+
+    @login_required  
+    def mutate_and_get_payload(root, info, user_id):
+        #try:        
+        # Get request user
+        user = info.context.user
+        # Get following user            
+        f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
+        # Delete f_user from user's following         
+        user.connection.following.remove(f_user)
+        user.save()
+        # Delete user from f_user's followers        
+        f_user.connection.followers.remove(user)  
+        f_user.save()   
+
+        return DeleteFollowingMutation(success=True)    
+
+
+class DeleteFollowersMutation(relay.ClientIDMutation):
+    """Post mutation for deleting a user's follower 
+    (i.e a user stops following you)"""    
+
+    class Input:     
+        user_id = graphene.ID(required=True)               
+
+    success = graphene.Boolean()
+    errors = graphene.List(Error)    
+
+    @login_required    
+    def mutate_and_get_payload(root, info, user_id):
+        #try:        
+        # Get request user
+        user = info.context.user
+        # Get follower user            
+        f_user = User.objects.get(pk=from_global_id(user_id)[1])                     
+        # Delete f_user from user's followers         
+        user.connection.followers.remove(f_user)
+        user.save()
+        # Delete user from f_user's followings        
+        f_user.connection.following.remove(user)  
+        f_user.save()   
+
+        return DeleteFollowersMutation(success=True)         
+      
+
+class ConnectionMutation(graphene.ObjectType):
+    delete_following = DeleteFollowingMutation.Field()
+    delete_followers = DeleteFollowersMutation.Field()
 

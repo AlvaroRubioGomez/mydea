@@ -15,17 +15,17 @@ class Profile(MyDeaModel):
     # Info
     user = models.OneToOneField('users.User', on_delete=models.CASCADE) 
 
-    # Connections
-    following = models.ManyToManyField(
-        'users.User', 
-        blank=True, 
-        related_name='following'
-    )  
-    followers = models.ManyToManyField(
-        'users.User', 
-        blank=True, 
-        related_name='followers'
-    )  
+    # # Connections
+    # following = models.ManyToManyField(
+    #     'users.User', 
+    #     blank=True, 
+    #     related_name='following'
+    # )  
+    # followers = models.ManyToManyField(
+    #     'users.User', 
+    #     blank=True, 
+    #     related_name='followers'
+    # )  
 
     def __str__(self):
         """Return user's str representation."""

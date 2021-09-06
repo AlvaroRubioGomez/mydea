@@ -1,9 +1,9 @@
 """User queries and mutations variables"""
 
 # Queries
-users_query = """
+find_users_query = """
 query($first: Int, $username: String){
-  users(first: $first, username: $username){
+  findUsers(first: $first, username: $username){
     edges{
       node{
         id,
