@@ -13,19 +13,7 @@ class Profile(MyDeaModel):
     published posts, notifications and social data."""
 
     # Info
-    user = models.OneToOneField('users.User', on_delete=models.CASCADE) 
-
-    # # Connections
-    # following = models.ManyToManyField(
-    #     'users.User', 
-    #     blank=True, 
-    #     related_name='following'
-    # )  
-    # followers = models.ManyToManyField(
-    #     'users.User', 
-    #     blank=True, 
-    #     related_name='followers'
-    # )  
+    user = models.OneToOneField('users.User', on_delete=models.CASCADE)     
 
     def __str__(self):
         """Return user's str representation."""

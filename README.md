@@ -37,7 +37,6 @@ After the docker build has finished, run the migrations to reflect the models in
 ```
 docker-compose run --rm django python manage.py makemigrations
 docker-compose run --rm django python manage.py migrate
-
 ```
 
 ### Run the project
@@ -62,12 +61,48 @@ In the admin site you can consult, add and delete instances to your database.
 ## Testing
 
 MyDea has been developed following the TDD methodology. 
-Each app folder contains a `tests` where you can consult all the unit tests performed.
+Each app folder contains a `tests` folder where you can consult all the unit tests performed.
 
 Run all the unit tests by running:
 ```
 docker-compose run --rm django pytest -v
 ```
+
+## Technical test & solution
+
+### Query/Mutation : Actions
+
+Below you can see a list of the actions a user can perform and the corresponding query or mutation name that covers that action.
+* **register**: *Un usuario puede registrarse introduciendo su email y eligiendo un nombre de usuario libre y una contraseña*
+* **login**: *Un usuario debe ser capaz de logarse utilizando email y contraseña.*
+* **passwordChange**: *Un usuario debe poder cambiar su contraseña.*
+* **sendPasswordResetEmail**: *Un usuario debe poder restaurar su contraseña recibiendo un email con un magic link.*
+* **createPost**: *Un usuario puede publicar una idea como un texto corto en cualquier momento.*<br>
+*Un usuario puede establecer la visibilidad de una idea: publica (todos pueden verla), protegida (solo otros usuarios que siguen al usuario de la idea pueden verla) y privada (solo el usuario que creó la idea puede verla)*
+* **editVisibility**: *Un usuario puede establecer la visibilidad de una idea en el momento de su creacion o editarla posteriormente.*
+* **myPosts**: *Un usuario puede consultar todas las ideas que ha publicado ordenadas de mas recientes a mas antiguas.*
+* **deletePost**: *Un usuario puede borrar una idea publicada.*
+* **sendRequest**: *Un usuario puede solicitar seguir a otro usuario*
+* **myRequests**/**resolveRequest**: *Un usuario puede ver el listado de solicitudes de seguimiento recibidas y aprovarlas o denegarlas*
+* **myFollowing**: *Un usuario puede ver el listado de gente a la que sigue*
+* **myFollowers**: *Un usuario puede ver el listado de gente que le sigue*
+* **deleteFollowing**: *Un usuario puede dejar de seguir a alguien*
+* **deleteFollowers**: *Un usuario puede eliminar a otro usuario de su lista de seguidores*
+* **findUsers**: *Un usuario puede realizar una busqueda de otros usuarios introduciendo un nombre de usuario o parte de uno*
+* **userPosts**: *Un usuario puede ver la lista de ideas de cualquier otro usuario, teniendo en cuenta la visibilidad de cada idea.*
+* **allPosts**: *Un usuario puede ver un timeline de ideas compuesto por sus propias ideas y las ideas de los usuarios a los que sigue, teniendo en cuenta la visibilidad de cada idea.*
+* **TBD**: *Un usuario debe recibir una notificación cada vez que un usuario al que sigue publica una idea nueva a la que tiene acceso.*
+
+### Models
+
+
+
+![MyDea models diagram](mydea.models_diagram.png "Models diagram")
+
+
+
+
+
 
 
 
