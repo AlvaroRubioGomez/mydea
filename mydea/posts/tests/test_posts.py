@@ -23,6 +23,7 @@ from mydea.posts.models import Post
 from .qm_variables_posts import (  
   my_posts_query,
   user_posts_query,
+  all_posts,
   create_post_mutation,  
   edit_visibility_mutation,
   delete_post_mutation,  

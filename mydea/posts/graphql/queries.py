@@ -25,13 +25,14 @@ class PostsQuery(graphene.ObjectType):
     user_posts = DjangoFilterConnectionField(
         PostNode,
         u_id = graphene.ID(required=True)
-    )  
+    ) 
+    all_posts = DjangoFilterConnectionField(PostNode)
     
     @login_required    
     def resolve_my_posts(root, info): 
-        # Get current user      
+        # Get current user's profile     
         profile = info.context.user.profile 
-        # Get user posts     
+        # Get user's posts     
         my_posts = Post.objects.filter(created_by=profile).all()        
         return my_posts
 
@@ -41,23 +42,43 @@ class PostsQuery(graphene.ObjectType):
         request_user = info.context.user        
         # Get user by id
         user = User.objects.get(pk=from_global_id(u_id)[1])
-        # Get user followers
+        # Get user's followers
         followers = user.profile.followers        
         # Get user posts
         if(user == request_user):
-            user_posts = Post.objects.filter(created_by=user.profile)
+            user_posts = Post.objects.filter(created_by=user.profile).all()
         elif(followers.filter(id=request_user.id).exists()): # request user is a follower
             user_posts = Post.objects.filter(
                 Q(created_by=user.profile) &
                 Q(visibility='PB') | Q(visibility='PT')
-            )
+            ).all()
         else:
             user_posts = Post.objects.filter(
                 created_by=user.profile,
                 visibility='PB'
-            )
+            ).all()
 
         return user_posts   
+
+    @login_required    
+    def resolve_all_posts(root, info):
+        # Get current user
+        user = info.context.user        
+        # Get user's following
+        following = user.profile.following             
+        # Get user's and following user's posts
+        all_posts = Post.objects.filter(
+            # Get all publics posts
+            Q(visibility='PB') 
+            # Get all protected posts of user's following
+            | Q(created_by__in=[user.profile for user in following.all()]) 
+                & Q(visibility='PT') 
+            # Get all user's privates and protected posts          
+            | Q(created_by=user.profile) & Q(visibility='PV') 
+                | Q(visibility='PT')           
+        ).all()      
+
+        return all_posts 
 
 
 

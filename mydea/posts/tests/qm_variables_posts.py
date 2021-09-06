@@ -38,6 +38,24 @@ query($uId: ID!){
 }
 """
 
+all_posts = """
+query{
+  allPosts{
+    edges{
+      node{
+        visibility,
+        created,
+        createdBy{
+          user{
+            username
+          }
+        }
+      }
+    }
+  }
+}
+"""
+
 # Mutations
 
 create_post_mutation = """
