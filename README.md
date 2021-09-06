@@ -18,7 +18,7 @@ License: **MIT**
 
 ## Run MyDea
 
-1. Build docker
+### Build docker
 
 It is highly recommended to create a python [virtual environment](https://docs.python.org/3/library/venv.html) to avoid dependencies conflicts with other projects.
 
@@ -30,7 +30,7 @@ docker-compose build
 ```
 And wait until it is finished.
 
-2. Make and run migrations
+### Make and run migrations
 
 After the docker build has finished, run the migrations to reflect the models inside the database by running:
 
@@ -40,7 +40,7 @@ docker-compose run --rm django python manage.py migrate
 
 ```
 
-3. Run the project
+### Run the project
 
 Up the server by running:
 ```
