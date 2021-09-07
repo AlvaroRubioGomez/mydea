@@ -12,8 +12,6 @@ from graphql_jwt.decorators import login_required
 
 # Models
 from mydea.posts.models import Post
-# from mydea.users.models import Profile
-from mydea.users.models import User
 
 # Types
 from mydea.users.graphql.types import ProfileNode

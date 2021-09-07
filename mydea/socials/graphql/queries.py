@@ -1,4 +1,4 @@
-"""Request graphql queries"""
+"""Social graphql queries"""
 
 # Graphene
 import graphene
@@ -46,6 +46,4 @@ class ConnectionQuery(graphene.ObjectType):
     def resolve_my_followers(root, info):       
         user = info.context.user         
         my_followers = user.connection.followers        
-        return my_followers  
-        
-        
+        return my_followers         

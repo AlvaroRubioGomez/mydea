@@ -1,4 +1,4 @@
-"""Request graphql mutations"""
+"""Social graphql mutations"""
 
 # Django
 from django.core.exceptions import (
@@ -177,4 +177,3 @@ class DeleteFollowersMutation(relay.ClientIDMutation):
 class ConnectionMutation(graphene.ObjectType):
     delete_following = DeleteFollowingMutation.Field()
     delete_followers = DeleteFollowersMutation.Field()
-

@@ -415,5 +415,3 @@ class TestPost(JSONWebTokenTestCase):
             len(post_collection), 
             len(self.posts[0])-1
         ) 
-        
-

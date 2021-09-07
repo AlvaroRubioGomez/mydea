@@ -36,4 +36,3 @@ class User(MyDeaModel, AbstractUser):
     def __str__(self):
         """Return username."""
         return self.username
-

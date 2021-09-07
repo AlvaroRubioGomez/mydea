@@ -1,3 +1,5 @@
+"""Post decorators"""
+
 from functools import wraps
 
 # Graphene

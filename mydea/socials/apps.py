@@ -1,9 +1,9 @@
-"""Requests app."""
+"""Social app."""
 
 # Django
 from django.apps import AppConfig
 
 class SocialsAppConfig(AppConfig):
-    """Requests app config."""
+    """Social app config."""
     name = 'mydea.socials'
     verbose_name = 'Socials'

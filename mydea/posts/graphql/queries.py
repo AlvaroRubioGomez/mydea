@@ -82,6 +82,3 @@ class PostsQuery(graphene.ObjectType):
         ).all()      
 
         return all_posts 
-
-
-

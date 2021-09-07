@@ -20,7 +20,7 @@ License: **MIT**
 
 ### Build docker
 
-It is highly recommended to create a python [virtual environment](https://docs.python.org/3/library/venv.html) to avoid dependencies conflicts with other projects.
+It is highly recommended to create a python [virtual environment](https://docs.python.org/3/library/venv.html) to avoid dependency conflicts with other projects.
 
 After you have cloned the mydea repository, build the docker by running inside the project root folder:
 
@@ -95,18 +95,16 @@ Below you can see a list of the actions a user can perform and the corresponding
 
 ### Models
 
-
+Below you can see the MyDea models diagram. Request and connection models are related to the User model while the Post model relates to the Profile model.
+This is just a design choice due to it makes sense that posts are directly connected to the user's profile.
 
 ![MyDea models diagram](mydea.models_diagram.png "Models diagram")
 
+### To Be Done (TBD)
 
-
-
-
-
-
-
-
-
-
-
+Good coding requires time and time is precious. There are a few things that has been left to be done:
+- The last user action where the user's followers receive a new post notification. The Notification model would be related to the User model as a many-to-one relationship, where a user has one notification list but a notification list can have many users.
+- The process of updating the notification list for every user's follower can slow the server response proportionally to the number of users. For this reason, it would be advisable to outsource this task with a taks queue as [Celery](https://docs.celeryproject.org/en/stable/getting-started/introduction.html) with the help of a message broker as [Redis](https://redis.io/).
+- Request queries and mutations requires some additional validations. Due to lack of time, there might be certain undesired behaviors such as duplicating requests, sending request to yourself, etc.<br>
+These can be easily fixed by adding certain validations.
+- Error handling. A model error has been built for formatting validation errors. However, other types of errors have their own format and they are just not consistent with each other. A proper error handling design should be performed.
