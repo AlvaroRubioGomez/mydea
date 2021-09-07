@@ -76,7 +76,7 @@ Below you can see a list of the actions a user can perform and the corresponding
 * **register**: *Un usuario puede registrarse introduciendo su email y eligiendo un nombre de usuario libre y una contraseña*
 * **login**: *Un usuario debe ser capaz de logarse utilizando email y contraseña.*
 * **passwordChange**: *Un usuario debe poder cambiar su contraseña.*
-* **sendPasswordResetEmail**: *Un usuario debe poder restaurar su contraseña recibiendo un email con un magic link.*
+* **sendPasswordResetEmail/passwordReset**: *Un usuario debe poder restaurar su contraseña recibiendo un email con un magic link.*
 * **createPost**: *Un usuario puede publicar una idea como un texto corto en cualquier momento.*<br>
 *Un usuario puede establecer la visibilidad de una idea: publica (todos pueden verla), protegida (solo otros usuarios que siguen al usuario de la idea pueden verla) y privada (solo el usuario que creó la idea puede verla)*
 * **editVisibility**: *Un usuario puede establecer la visibilidad de una idea en el momento de su creacion o editarla posteriormente.*
@@ -95,7 +95,7 @@ Below you can see a list of the actions a user can perform and the corresponding
 
 ### Models
 
-Below you can see the MyDea models diagram. Request and connection models are related to the User model while the Post model relates to the Profile model.
+Below you can see the MyDea models diagram. Request and Connection models are related to the User model while the Post model relates to the Profile model.
 This is just a design choice due to it makes sense that posts are directly connected to the user's profile.
 
 ![MyDea models diagram](mydea.models_diagram.png "Models diagram")
@@ -103,8 +103,9 @@ This is just a design choice due to it makes sense that posts are directly conne
 ### To Be Done (TBD)
 
 Good coding requires time and time is precious. There are a few things that has been left to be done:
-- The last user action where the user's followers receive a new post notification. The Notification model would be related to the User model as a many-to-one relationship, where a user has one notification list but a notification list can have many users.
+- The last user's action where the user's followers receive a new post notification. The Notification model would be related to the User model as a many-to-one relationship, where a user has one notification list but a notification list can have many users.
 - The process of updating the notification list for every user's follower can slow the server response proportionally to the number of users. For this reason, it would be advisable to outsource this task with a taks queue as [Celery](https://docs.celeryproject.org/en/stable/getting-started/introduction.html) with the help of a message broker as [Redis](https://redis.io/).
 - Request queries and mutations requires some additional validations. Due to lack of time, there might be certain undesired behaviors such as duplicating requests, sending request to yourself, etc.<br>
 These can be easily fixed by adding certain validations.
 - Error handling. A model error has been built for formatting validation errors. However, other types of errors have their own format and they are just not consistent with each other. A proper error handling design should be performed.
+- Populating the database. For the seek of testing the app it would have been ideal to populate the database with mock-up data. This can be achieved with the django [fixtures](https://docs.djangoproject.com/en/3.2/howto/initial-data/) functionality and a mock-up data generator as [Mockaroo](https://www.mockaroo.com/). 
