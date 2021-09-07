@@ -1,0 +1,961 @@
+{
+	"info": {
+		"_postman_id": "c67af800-bcd2-4720-90c8-f380264931a3",
+		"name": "mydea",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "queries",
+					"item": [
+						{
+							"name": "Get all users (findUsers)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query{\n  findUsers{\n    edges{\n      node{\n        id,\n        email,\n        username,        \n      }\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get users by username 1 (findUsers)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"dummy_user_1_id\", jsonData.data.findUsers.edges[0].node.id);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query($username: String!){\n  findUsers(username: $username){\n    edges{\n      node{\n        id,\n        email,\n        username,        \n      }\n    }\n  }\n}",
+										"variables": "{   \n    \"username\": {{dummy_username_1}}\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get users by partial username 2 (findUsers)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"dummy_user_2_id\", jsonData.data.findUsers.edges[0].node.id);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query($username_Icontains: String!){\n  findUsers(username_Icontains: $username_Icontains){\n    edges{\n      node{\n        id,\n        email,\n        username,        \n      }\n    }\n  }\n}",
+										"variables": "{   \n    \"username_Icontains\": \"2\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "mutations",
+					"item": [
+						{
+							"name": "Register user 1 (register)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"last_register_token\", jsonData.data.register.token);",
+											"postman.setEnvironmentVariable(\"last_register_refresh_token\", jsonData.data.register.refreshToken);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $firstName: String\n  $lastName: String\n  $phoneNumber: String\n  $email: String!,\n  $username: String!,\n  $password1: String!,\n  $password2: String!\n\t){\n    register(\n      email: $email,\n      username: $username,\n      password1: $password1,\n      password2: $password2\n      firstName: $firstName\n      lastName: $lastName\n      phoneNumber: $phoneNumber\n    ){\n      success,\n      errors,\n      refreshToken,\n      token\n    }\n}",
+										"variables": "{   \n    \"firstName\": {{dummy_first_name_1}},\n    \"lastName\": {{dummy_last_name_1}},\n    \"phoneNumber\": {{dummy_phone_1}},\n    \"email\": {{dummy_email_1}},\n    \"username\": {{dummy_username_1}},\n    \"password1\": {{dummy_password}},\n    \"password2\": {{dummy_password}} \n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user 2 (register)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"last_register_token\", jsonData.data.register.token);",
+											"postman.setEnvironmentVariable(\"last_register_refresh_token\", jsonData.data.register.refreshToken);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $firstName: String\n  $lastName: String\n  $phoneNumber: String\n  $email: String!,\n  $username: String!,\n  $password1: String!,\n  $password2: String!\n\t){\n    register(\n      email: $email,\n      username: $username,\n      password1: $password1,\n      password2: $password2\n      firstName: $firstName\n      lastName: $lastName\n      phoneNumber: $phoneNumber\n    ){\n      success,\n      errors,\n      refreshToken,\n      token\n    }\n}",
+										"variables": "{   \n    \"firstName\": {{dummy_first_name_2}},\n    \"lastName\": {{dummy_last_name_2}},\n    \"phoneNumber\": {{dummy_phone_2}},\n    \"email\": {{dummy_email_2}},\n    \"username\": {{dummy_username_2}},\n    \"password1\": {{dummy_password}},\n    \"password2\": {{dummy_password}} \n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login user 1 (login)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"last_login_token\", jsonData.data.login.token);",
+											"postman.setEnvironmentVariable(\"last_login_refresh_token\", jsonData.data.login.refreshToken);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $username: String!, \n  $password:String!\n){\n  login(\n    username: $username, \n    password: $password\n  ){\n    success,\n    errors,\n    token,\n    refreshToken,\n    user{\n      id,\n      username,\n      email\n    }\n  }\n}",
+										"variables": "{   \n    \"username\": {{dummy_username_1}},\n    \"password\": {{dummy_password}}    \n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login user 2 (login)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"last_login_token\", jsonData.data.login.token);",
+											"postman.setEnvironmentVariable(\"last_login_refresh_token\", jsonData.data.login.refreshToken);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $username: String!, \n  $password:String!\n){\n  login(\n    username: $username, \n    password: $password\n  ){\n    success,\n    errors,\n    token,\n    refreshToken,\n    user{\n      id,\n      username,\n      email\n    }\n  }\n}",
+										"variables": "{   \n    \"username\": {{dummy_username_2}},\n    \"password\": {{dummy_password}}    \n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change user password 1 (passwordChange)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Script for swapping dummy passwords environment values",
+											"//In that way the login, password_change and reset_password mutations won't break after changing the password.",
+											"var prev_dummy_pass = pm.environment.get(\"dummy_password\");",
+											"var prev_new_dummy_pass = pm.environment.get(\"new_dummy_password\");",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"if(jsonData.data != null && jsonData.data.passwordChange.success == true){",
+											"        pm.environment.set(\"dummy_password\", prev_new_dummy_pass);",
+											"        pm.environment.set(\"new_dummy_password\", prev_dummy_pass);",
+											"    }",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n    $oldPassword: String!\n    $newPassword1: String!\n    $newPassword2: String!\n){\n  passwordChange(\n    oldPassword: $oldPassword,\n    newPassword1: $newPassword1,\n    newPassword2: $newPassword2\n  ){\n    success,\n    errors,\n    refreshToken,\n    token\n  }   \n}",
+										"variables": "{   \n    \"oldPassword\": {{dummy_password}},\n    \"newPassword1\": {{new_dummy_password}},\n    \"newPassword2\": {{new_dummy_password}}    \n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Send reset password email 1 (sendPasswordResetEmail)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation($email: String!){\n    sendPasswordResetEmail(\n    email: $email\n  ){\n    success,\n    errors\n  }\n}",
+										"variables": "{   \n    \"email\": {{dummy_email_1}}\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset password 1 (passwordReset) - Collect token from console",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Script for swapping dummy passwords environment values",
+											"//In that way the login, password_change and reset_password mutations won't break after changing the password.",
+											"var prev_dummy_pass = pm.environment.get(\"dummy_password\");",
+											"var prev_new_dummy_pass = pm.environment.get(\"new_dummy_password\");",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"if(jsonData.data != null && jsonData.data.passwordReset.success == true){",
+											"        pm.environment.set(\"dummy_password\", prev_new_dummy_pass);",
+											"        pm.environment.set(\"new_dummy_password\", prev_dummy_pass);",
+											"    }",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n    $token: String!\n    $newPassword1: String!\n    $newPassword2: String!\n){\n    passwordReset(\n        token: $token,\n        newPassword1: $newPassword1,\n        newPassword2: $newPassword2\n        ){\n            success,\n            errors\n        }\n}",
+										"variables": "{    \n    \"token\": \"eyJ1c2VybmFtZSI6InVfZHVtbXlfMSIsImFjdGlvbiI6InBhc3N3b3JkX3Jlc2V0In0:1mNM97:o9ZQaf5jLTIpJldBbX3TVSNBLaNnbIKGhdo1L-UO_cM\",\n    \"newPassword1\": {{new_dummy_password}},\n    \"newPassword2\": {{new_dummy_password}}\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "posts",
+			"item": [
+				{
+					"name": "queries",
+					"item": [
+						{
+							"name": "Get my posts (myPosts)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query{\n  myPosts{\n    edges{\n      node{\n        body,\n        visibility,\n        createdBy{\n          user{\n            username\n          }\n        }\n      }\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user's posts (userPosts)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query($userId: ID!){\n  userPosts(userId: $userId){\n    edges{\n      node{\n        visibility,\n        body,\n        createdBy{\n          user{\n            id\n          }\n        }\n      }\n    }\n  }\n}",
+										"variables": "{\n    \"userId\": \"{{dummy_user_1_id}}\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "mutations",
+					"item": [
+						{
+							"name": "Create post (createPost)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Script for storing the created post id",
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.environment.set(\"dummy_post_id\", jsonData.data.createPost.post.id);",
+											"",
+											"",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $visibility: String,\n  $body: String!\n\t){\n    createPost(\n      input:{\n        visibility: $visibility,\n        body: $body\n      }){\n        success,\n        post{\n          id,\n          body,\n          visibility\n          createdBy{\n            user{\n                username\n            }\n          }\n        }\n        errors{\n          fieldName,\n          messages\n        }\n    }\n}",
+										"variables": "{    \n  \"body\": {{dummy_body}},\n  \"visibility\": {{visibility}}\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit visibility (editVisibility)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Script for swapping visibility and new visibility environment values",
+											"//In that way the edit visibility mutation will show a change",
+											"var prev_visibility = pm.environment.get(\"visibility\");",
+											"var prev_new_visibility = pm.environment.get(\"new_visibility\");",
+											"var jsonData = JSON.parse(responseBody);",
+											"",
+											"if(jsonData.data != null && jsonData.data.editVisibility.success == true){",
+											"        pm.environment.set(\"visibility\", prev_new_visibility);",
+											"        pm.environment.set(\"new_visibility\", prev_visibility);",
+											"    }",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $id: ID!\n  $visibility: String!\n){\n  editVisibility(\n    input: {\n      id: $id,\n      visibility: $visibility\n    }){\n    success,\n    post{\n      id,\n      body,\n      visibility\n    }\n    errors{\n      fieldName,\n      messages\n    }    \n  }\n}",
+										"variables": "{    \n  \"id\": \"{{dummy_post_id}}\",\n  \"visibility\": {{new_visibility}}\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete post (deletePost)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $id: ID!\n){\n  deletePost(input: {id: $id}){\n    success,   \n    errors{\n      fieldName,\n      messages\n    }    \n  }\n}",
+										"variables": "{    \n  \"id\": \"{{dummy_post_id}}\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "social",
+			"item": [
+				{
+					"name": "queries",
+					"item": [
+						{
+							"name": "Get user's requests (myRequests)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query{\n  myRequests{\n    edges{\n      node{\n        id,\n        sender{\n          username\n        },\n        receiver{\n          username\n        },\n        status\n      }\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user's following (myFollowing)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"following_id\", jsonData.data.myFollowing.edges[0].node.id);",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query{\n  myFollowing{\n    edges{\n      node{\n        id,\n        username,\n        firstName       \n      }\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get user's followers (myFollowers)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"followers_id\", jsonData.data.myFollowers.edges[0].node.id);",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query{\n  myFollowers{\n    edges{\n      node{\n        id,\n        username,\n        firstName       \n      }\n    }\n  }\n}",
+										"variables": ""
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "mutations",
+					"item": [
+						{
+							"name": "Send follow request (sendRequest)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"request_id\", jsonData.data.sendRequest.request.id);",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation($to_user_id:ID!){\n  sendRequest(\n    input: {toUserId: $to_user_id}\n  ){\n    success,\n    errors{\n      fieldName,\n      messages\n    }\n    request{\n      id,  \n      sender{\n        username\n      },\n      receiver{\n        username\n      },\n      status\n    }    \n\t}\n}",
+										"variables": "{    \n  \"to_user_id\": \"{{dummy_user_2_id}}\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Accept/Reject request (resolveRequest)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation(\n  $r_id:ID!,\n\t$action: Action!\n){\n  resolveRequest(\n    input:{\n      requestId:$r_id,\n      action: $action\n    }){\n    success,\n    errors{\n      fieldName,\n      messages\n    },\n    request{\n      status\n    }\n  }\n}",
+										"variables": "{    \n  \"r_id\": \"{{request_id}}\",\n  \"action\": \"accept\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete following user (deleteFollowing)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation($user_id:ID!){\n  deleteFollowing(\n    input:{userId: $user_id}\n  ){\n    success, \n    errors{\n      fieldName,\n      messages\n    }\n  }\n}",
+										"variables": "{    \n  \"user_id\": \"{{following_id}}\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete followers user (deleteFollowers)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "mutation($user_id:ID!){\n  deleteFollowers(\n    input:{userId: $user_id}\n  ){\n    success, \n    errors{\n      fieldName,\n      messages\n    }\n  }\n}",
+										"variables": "{    \n  \"user_id\": \"{{followers_id}}\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

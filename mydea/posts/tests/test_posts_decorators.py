@@ -84,11 +84,4 @@ class TestPostDecorators(JSONWebTokenTestCase):
         errors = response.data["deletePost"]["errors"]        
 
         self.assertTrue(success)
-        self.assertIsNone(errors)     
-        
-
-
-
-
-       
-      
+        self.assertIsNone(errors)    

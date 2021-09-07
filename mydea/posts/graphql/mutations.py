@@ -108,7 +108,6 @@ class DeletePostMutation(relay.ClientIDMutation):
     @login_required
     @is_post_owner
     def mutate_and_get_payload(root, info, id):
-        #try:
         # Get post
         post = Post.objects.get(pk=from_global_id(id)[1])
         # Delete post
@@ -122,4 +121,3 @@ class PostMutation(graphene.ObjectType):
     create_post = CreatePostMutation.Field()
     edit_visibility = UpdatePostMutation.Field()
     delete_post = DeletePostMutation.Field()
-

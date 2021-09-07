@@ -146,5 +146,4 @@ class TestRequest(JSONWebTokenTestCase):
             receiver["username"], 
             self.receiver_user.username
         )  
-        self.assertEqual(status, 'S')
-        
+        self.assertEqual(status, 'S')        

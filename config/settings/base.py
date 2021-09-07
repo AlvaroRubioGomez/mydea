@@ -55,8 +55,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.sites",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # "django.contrib.humanize", # Handy template tags
+    "django.contrib.staticfiles",    
     "django.contrib.admin",
     "django.forms",
 ]
@@ -86,11 +85,6 @@ MIGRATION_MODULES = {"sites": "mydea.contrib.sites.migrations"}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
-# https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
-# AUTHENTICATION_BACKENDS = [
-#     "django.contrib.auth.backends.ModelBackend",
-#     "allauth.account.auth_backends.AuthenticationBackend",
-# ]
 AUTHENTICATION_BACKENDS = [
     'graphql_auth.backends.GraphQLAuthBackend',
     'django.contrib.auth.backends.ModelBackend',

@@ -151,7 +151,4 @@ class TestUserAuth(JSONWebTokenTestCase):
         self.assertTrue(pass_change["success"])
         self.assertIsNotNone(pass_change["token"])
         self.assertIsNotNone(pass_change["refreshToken"])        
-        self.assertIsNone(pass_change["errors"])        
-         
-
-
+        self.assertIsNone(pass_change["errors"])    

@@ -28,5 +28,5 @@ class Connection(MyDeaModel):
     )  
 
     def __str__(self):
-        """Return user's connections."""
+        """Return user's connections."""        
         return f"{self.user}: -->{list(self.following.all())} / <--{list(self.followers.all())}"

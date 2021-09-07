@@ -1,4 +1,4 @@
-"""Request graphql types"""
+"""Social graphql types"""
 
 # Django
 import django_filters
@@ -18,5 +18,4 @@ class RequestNode(DjangoObjectType):
     class Meta:
         model = Request               
         filter_fields = []
-        interfaces = (relay.Node, )      
-  
+        interfaces = (relay.Node, )   

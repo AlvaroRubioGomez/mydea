@@ -1,0 +1,544 @@
+enum Action {
+  accept
+  reject
+}
+
+"""
+Register user with fields defined in the settings.
+
+If the email field of the user model is part of the
+registration fields (default), check if there is
+no user with that email or as a secondary email.
+
+If it exists, it does not register the user,
+even if the email field is not defined as unique
+(default of the default django user model).
+
+When creating the user:
++ creates a `UserStatus`
+related to that user, making it possible to track
+if the user is archived, verified and has a secondary
+email.
++ sets the `UserStatus` verified
+flag as true.
++ creates an empty profile associated with the registered 
+user.
+
+Send account verification email.    
+"""
+type AutoVerificationRegister {
+  success: Boolean
+  errors: ExpectedErrorType
+  refreshToken: String
+  token: String
+}
+
+input CreatePostMutationInput {
+  visibility: String
+  body: String!
+  clientMutationId: String
+}
+
+"""Post mutation for creating an post"""
+type CreatePostMutationPayload {
+  post: PostNode
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+input CreateRequestMutationInput {
+  toUserId: ID!
+  clientMutationId: String
+}
+
+"""Request mutation for creating a request"""
+type CreateRequestMutationPayload {
+  request: RequestNode
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+type CustomUserNode implements Node {
+  """The ID of the object."""
+  id: ID!
+
+  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  username: String!
+  firstName: String!
+  lastName: String!
+
+  """Date time on which the object was created."""
+  created: DateTime!
+
+  """Date time on which the object was modified."""
+  modified: DateTime!
+  email: String!
+  phoneNumber: String
+  profile: ProfileNode
+}
+
+type CustomUserNodeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [CustomUserNodeEdge]!
+}
+
+"""A Relay edge containing a `CustomUserNode` and its cursor."""
+type CustomUserNodeEdge {
+  """The item at the end of the edge"""
+  node: CustomUserNode
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+input DeleteFollowersMutationInput {
+  userId: ID!
+  clientMutationId: String
+}
+
+"""
+Post mutation for deleting a user's follower 
+(i.e a user stops following you)
+"""
+type DeleteFollowersMutationPayload {
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+input DeleteFollowingMutationInput {
+  userId: ID!
+  clientMutationId: String
+}
+
+"""
+Post mutation for deleting a user's following 
+(i.e stop following a user)
+"""
+type DeleteFollowingMutationPayload {
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+input DeletePostMutationInput {
+  id: ID!
+  clientMutationId: String
+}
+
+"""Post mutation for deleting a post"""
+type DeletePostMutationPayload {
+  post: PostNode
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+type Error {
+  fieldName: String
+  messages: [String]
+}
+
+"""
+
+    Errors messages and codes mapped to
+    fields or non fields errors.
+    Example:
+    {
+        field_name: [
+            {
+                "message": "error message",
+                "code": "error_code"
+            }
+        ],
+        other_field: [
+            {
+                "message": "error message",
+                "code": "error_code"
+            }
+        ],
+        nonFieldErrors: [
+            {
+                "message": "error message",
+                "code": "error_code"
+            }
+        ]
+    }
+    
+"""
+scalar ExpectedErrorType
+
+type Mutation {
+  """Request mutation for accepting a follow request"""
+  resolveRequest(input: UpdateRequestMutationInput!): UpdateRequestMutationPayload
+
+  """Request mutation for creating a request"""
+  sendRequest(input: CreateRequestMutationInput!): CreateRequestMutationPayload
+
+  """
+  Post mutation for deleting a user's following 
+  (i.e stop following a user)
+  """
+  deleteFollowing(input: DeleteFollowingMutationInput!): DeleteFollowingMutationPayload
+
+  """
+  Post mutation for deleting a user's follower 
+  (i.e a user stops following you)
+  """
+  deleteFollowers(input: DeleteFollowersMutationInput!): DeleteFollowersMutationPayload
+
+  """Post mutation for creating an post"""
+  createPost(input: CreatePostMutationInput!): CreatePostMutationPayload
+
+  """Post mutation for updating the visibility of a post"""
+  editVisibility(input: UpdatePostMutationInput!): UpdatePostMutationPayload
+
+  """Post mutation for deleting a post"""
+  deletePost(input: DeletePostMutationInput!): DeletePostMutationPayload
+
+  """
+  Register user with fields defined in the settings.
+  
+  If the email field of the user model is part of the
+  registration fields (default), check if there is
+  no user with that email or as a secondary email.
+  
+  If it exists, it does not register the user,
+  even if the email field is not defined as unique
+  (default of the default django user model).
+  
+  When creating the user:
+  + creates a `UserStatus`
+  related to that user, making it possible to track
+  if the user is archived, verified and has a secondary
+  email.
+  + sets the `UserStatus` verified
+  flag as true.
+  + creates an empty profile associated with the registered 
+  user.
+  
+  Send account verification email.    
+  """
+  register(firstName: String, lastName: String, phoneNumber: String, email: String!, username: String!, password1: String!, password2: String!): AutoVerificationRegister
+
+  """
+  Obtain JSON web token for given user.
+  
+  Allow to perform login with different fields,
+  and secondary email if set. The fields are
+  defined on settings.
+  
+  Not verified users can login by default. This
+  can be changes on settings.
+  
+  If user is archived, make it unarchive and
+  return `unarchiving=True` on output.
+  """
+  login(password: String!, email: String, username: String): ObtainJSONWebToken
+
+  """
+  Change account password when user knows the old password.
+  
+  A new token and refresh token are sent. User must be verified.
+  """
+  passwordChange(oldPassword: String!, newPassword1: String!, newPassword2: String!): PasswordChange
+
+  """
+  Send password reset email.
+  
+  For non verified users, send an activation
+  email instead.
+  
+  Accepts both primary and secondary email.
+  
+  If there is no user with the requested email,
+  a successful response is returned.
+  """
+  sendPasswordResetEmail(email: String!): SendPasswordResetEmail
+
+  """
+  Change user password without old password.
+  
+  Receive the token that was sent by email.
+  
+  If token and new passwords are valid, update
+  user password and in case of using refresh
+  tokens, revoke all of them.
+  
+  Also, if user has not been verified yet, verify it.
+  """
+  passwordReset(token: String!, newPassword1: String!, newPassword2: String!): PasswordReset
+}
+
+"""An object with an ID"""
+interface Node {
+  """The ID of the object."""
+  id: ID!
+}
+
+"""
+Obtain JSON web token for given user.
+
+Allow to perform login with different fields,
+and secondary email if set. The fields are
+defined on settings.
+
+Not verified users can login by default. This
+can be changes on settings.
+
+If user is archived, make it unarchive and
+return `unarchiving=True` on output.
+"""
+type ObtainJSONWebToken {
+  token: String
+  success: Boolean
+  errors: ExpectedErrorType
+  user: UserNode
+  unarchiving: Boolean
+  refreshToken: String
+}
+
+"""
+The Relay compliant `PageInfo` type, containing data necessary to paginate this connection.
+"""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""
+Change account password when user knows the old password.
+
+A new token and refresh token are sent. User must be verified.
+"""
+type PasswordChange {
+  success: Boolean
+  errors: ExpectedErrorType
+  refreshToken: String
+  token: String
+}
+
+"""
+Change user password without old password.
+
+Receive the token that was sent by email.
+
+If token and new passwords are valid, update
+user password and in case of using refresh
+tokens, revoke all of them.
+
+Also, if user has not been verified yet, verify it.
+"""
+type PasswordReset {
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+type PostNode implements Node {
+  """Date time on which the object was created."""
+  created: DateTime!
+
+  """Date time on which the object was modified."""
+  modified: DateTime!
+
+  """The ID of the object."""
+  id: ID!
+  createdBy: ProfileNode
+  visibility: PostVisibility
+  body: String!
+}
+
+type PostNodeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [PostNodeEdge]!
+}
+
+"""A Relay edge containing a `PostNode` and its cursor."""
+type PostNodeEdge {
+  """The item at the end of the edge"""
+  node: PostNode
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""An enumeration."""
+enum PostVisibility {
+  """public"""
+  PB
+
+  """protected"""
+  PT
+
+  """private"""
+  PV
+}
+
+type ProfileNode implements Node {
+  """Date time on which the object was created."""
+  created: DateTime!
+
+  """Date time on which the object was modified."""
+  modified: DateTime!
+
+  """The ID of the object."""
+  id: ID!
+  user: CustomUserNode!
+}
+
+type Query {
+  myRequests(offset: Int, before: String, after: String, first: Int, last: Int): RequestNodeConnection
+  myFollowing(offset: Int, before: String, after: String, first: Int, last: Int, username: String, username_Icontains: String): CustomUserNodeConnection
+  myFollowers(offset: Int, before: String, after: String, first: Int, last: Int, username: String, username_Icontains: String): CustomUserNodeConnection
+  myPosts(offset: Int, before: String, after: String, first: Int, last: Int): PostNodeConnection
+  userPosts(userId: ID!, offset: Int, before: String, after: String, first: Int, last: Int): PostNodeConnection
+  allPosts(offset: Int, before: String, after: String, first: Int, last: Int): PostNodeConnection
+  findUsers(offset: Int, before: String, after: String, first: Int, last: Int, username: String, username_Icontains: String): CustomUserNodeConnection
+}
+
+type RequestNode implements Node {
+  """Date time on which the object was created."""
+  created: DateTime!
+
+  """Date time on which the object was modified."""
+  modified: DateTime!
+
+  """The ID of the object."""
+  id: ID!
+  sender: CustomUserNode!
+  receiver: CustomUserNode!
+  status: RequestStatus!
+}
+
+type RequestNodeConnection {
+  """Pagination data for this connection."""
+  pageInfo: PageInfo!
+
+  """Contains the nodes in this connection."""
+  edges: [RequestNodeEdge]!
+}
+
+"""A Relay edge containing a `RequestNode` and its cursor."""
+type RequestNodeEdge {
+  """The item at the end of the edge"""
+  node: RequestNode
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""An enumeration."""
+enum RequestStatus {
+  """sent"""
+  S
+
+  """accepted"""
+  A
+
+  """rejected"""
+  R
+}
+
+"""
+Send password reset email.
+
+For non verified users, send an activation
+email instead.
+
+Accepts both primary and secondary email.
+
+If there is no user with the requested email,
+a successful response is returned.
+"""
+type SendPasswordResetEmail {
+  success: Boolean
+  errors: ExpectedErrorType
+}
+
+input UpdatePostMutationInput {
+  id: ID!
+  visibility: String!
+  clientMutationId: String
+}
+
+"""Post mutation for updating the visibility of a post"""
+type UpdatePostMutationPayload {
+  post: PostNode
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+input UpdateRequestMutationInput {
+  requestId: ID!
+  action: Action!
+  clientMutationId: String
+}
+
+"""Request mutation for accepting a follow request"""
+type UpdateRequestMutationPayload {
+  request: RequestNode
+  success: Boolean
+  errors: [Error]
+  clientMutationId: String
+}
+
+type UserNode implements Node {
+  """The ID of the object."""
+  id: ID!
+
+  """Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."""
+  username: String!
+  firstName: String!
+  lastName: String!
+
+  """Date time on which the object was created."""
+  created: DateTime!
+
+  """Date time on which the object was modified."""
+  modified: DateTime!
+  email: String!
+  phoneNumber: String
+  profile: ProfileNode
+  lastLogin: DateTime
+
+  """Designates whether the user can log into this admin site."""
+  isStaff: Boolean!
+
+  """
+  Designates whether this user should be treated as active. Unselect this instead of deleting accounts.
+  """
+  isActive: Boolean!
+  dateJoined: DateTime!
+  sender(offset: Int, before: String, after: String, first: Int, last: Int): RequestNodeConnection!
+  receiver(offset: Int, before: String, after: String, first: Int, last: Int): RequestNodeConnection!
+  pk: Int
+  archived: Boolean
+  verified: Boolean
+  secondaryEmail: String
+}
+
