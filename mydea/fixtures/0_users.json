@@ -1,0 +1,131 @@
+[{
+  "model": "users.User",
+  "pk": 1,
+  "fields": {
+    "username": "asabatier0",
+    "first_name": "Bartie",
+    "last_name": "Sabatier",
+    "email": "asabatier0@bloglovin.com",
+    "phone_number": "+63 943 810 3379",
+    "created": "2020-12-02T22:58:21Z",
+    "modified": "2020-12-02T22:58:21Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 2,
+  "fields": {
+    "username": "aelleray1",
+    "first_name": "Bessie",
+    "last_name": "Elleray",
+    "email": "aelleray1@businessinsider.com",
+    "phone_number": "+55 428 768 3911",
+    "created": "2021-05-29T00:40:39Z",
+    "modified": "2021-05-29T00:40:39Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 3,
+  "fields": {
+    "username": "abennoe2",
+    "first_name": "Prudy",
+    "last_name": "Bennoe",
+    "email": "abennoe2@bbc.co.uk",
+    "phone_number": "+63 899 576 5803",
+    "created": "2021-06-04T06:43:49Z",
+    "modified": "2021-06-04T06:43:49Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 4,
+  "fields": {
+    "username": "ateale3",
+    "first_name": "Bill",
+    "last_name": "Teale",
+    "email": "ateale3@netlog.com",
+    "phone_number": "+681 623 716 2605",
+    "created": "2021-04-26T11:24:08Z",
+    "modified": "2021-04-26T11:24:08Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 5,
+  "fields": {
+    "username": "aspacey4",
+    "first_name": "Engracia",
+    "last_name": "Spacey",
+    "email": "aspacey4@delicious.com",
+    "phone_number": "+62 137 810 7066",
+    "created": "2021-08-29T11:34:52Z",
+    "modified": "2021-08-29T11:34:52Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 6,
+  "fields": {
+    "username": "astollsteimer5",
+    "first_name": "Olenka",
+    "last_name": "Stollsteimer",
+    "email": "astollsteimer5@posterous.com",
+    "phone_number": "+86 583 966 7841",
+    "created": "2021-09-11T09:56:15Z",
+    "modified": "2021-09-11T09:56:15Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 7,
+  "fields": {
+    "username": "arenols6",
+    "first_name": "Morry",
+    "last_name": "Renols",
+    "email": "arenols6@who.int",
+    "phone_number": "+33 491 500 5281",
+    "created": "2021-08-16T16:04:39Z",
+    "modified": "2021-08-16T16:04:39Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 8,
+  "fields": {
+    "username": "arandle7",
+    "first_name": "Even",
+    "last_name": "Randle",
+    "email": "arandle7@gizmodo.com",
+    "phone_number": "+86 949 423 8067",
+    "created": "2021-09-17T15:50:25Z",
+    "modified": "2021-09-17T15:50:25Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 9,
+  "fields": {
+    "username": "ablitzer8",
+    "first_name": "Julee",
+    "last_name": "Blitzer",
+    "email": "ablitzer8@sfgate.com",
+    "phone_number": "+48 942 405 8006",
+    "created": "2020-12-10T07:01:15Z",
+    "modified": "2020-12-10T07:01:15Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}, {
+  "model": "users.User",
+  "pk": 10,
+  "fields": {
+    "username": "ahuntress9",
+    "first_name": "Benson",
+    "last_name": "Huntress",
+    "email": "ahuntress9@github.com",
+    "phone_number": "+351 404 498 2372",
+    "created": "2021-06-22T03:24:16Z",
+    "modified": "2021-06-22T03:24:16Z",
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$U2U3NElXZEhtb09P$jLEIP0jHK7BSRBMne0i6gg"
+  }
+}]

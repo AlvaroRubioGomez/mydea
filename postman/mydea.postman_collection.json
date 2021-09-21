@@ -224,7 +224,7 @@
 									"mode": "graphql",
 									"graphql": {
 										"query": "mutation(\n  $username: String!, \n  $password:String!\n){\n  login(\n    username: $username, \n    password: $password\n  ){\n    success,\n    errors,\n    token,\n    refreshToken,\n    user{\n      id,\n      username,\n      email\n    }\n  }\n}",
-										"variables": "{   \n    \"username\": {{dummy_username_1}},\n    \"password\": {{dummy_password}}    \n}"
+										"variables": "{   \n    \"username\": {{dummy_username_1}},\n    \"password\": {{dummy_password}}\n}"
 									}
 								},
 								"url": {
@@ -480,6 +480,48 @@
 									"graphql": {
 										"query": "query($userId: ID!){\n  userPosts(userId: $userId){\n    edges{\n      node{\n        visibility,\n        body,\n        createdBy{\n          user{\n            id\n          }\n        }\n      }\n    }\n  }\n}",
 										"variables": "{\n    \"userId\": \"{{dummy_user_1_id}}\"\n}"
+									}
+								},
+								"url": {
+									"raw": "{{graphql_url}}",
+									"host": [
+										"{{graphql_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all posts (allPosts)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "JWT {{last_login_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "graphql",
+									"graphql": {
+										"query": "query{\n  allPosts{\n    edges{\n      node{\n        id,\n        body,\n        visibility\n        createdBy{\n          user{\n            username\n          }\n        }\n      }\n    }\n  }\n}",
+										"variables": ""
 									}
 								},
 								"url": {

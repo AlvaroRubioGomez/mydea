@@ -39,6 +39,23 @@ docker-compose run --rm django python manage.py makemigrations
 docker-compose run --rm django python manage.py migrate
 ```
 
+### Populate the database
+
+When building the project, the database is going to be empty. For the seek of testing the app, the project includes django fixtures and a script for populating the database with mock-up data.<br>
+
+To populate the database simply run:
+```
+docker-compose run --rm django python manage.py loaddata mydea/fixtures/*.json
+docker-compose run --rm django python manage.py runscript set_up_db_data
+```
+
+The mock-up data is created by the data generator [Mockaroo](https://www.mockaroo.com/) and it contains:
+* 10 users.
+* 10 profiles.
+* 10 connections with a random number of followings and followers users.
+* 40 posts randomly associated to each user.
+* 30+ requests between sent and accepted ones.
+
 ### Run the project
 
 Up the server by running:

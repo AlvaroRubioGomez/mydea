@@ -16,6 +16,7 @@ class PostAdmin(admin.ModelAdmin):
         'get_username', 
         'body', 
         'visibility', 
+        'created',
         'modified'
     )
 
@@ -25,8 +26,9 @@ class PostAdmin(admin.ModelAdmin):
     get_username.short_description = 'Username'
 
     search_fields = (
-        'profile__user__username', 
-        'profile__user__email')
+        'created_by__user__username',
+        'created_by__user__id'
+    )      
     list_filter = ('visibility',)
 
 admin.site.register(Post, PostAdmin)

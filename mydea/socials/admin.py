@@ -29,6 +29,10 @@ class RequestAdmin(admin.ModelAdmin):
     get_receiver_username.short_description = 'Receiver'
 
     list_filter = ('status',)
+    search_fields = (
+        'sender__username',
+        'receiver__username'
+    )  
 
 admin.site.register(Request, RequestAdmin)
 
