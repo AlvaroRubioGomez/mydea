@@ -24,6 +24,10 @@ class PostAdmin(admin.ModelAdmin):
     get_username.admin_order_field = 'user'
     get_username.short_description = 'Username'
 
+    def save_model(self, request, obj, form, change):
+        print("this is called thorugh admin")
+        super().save_model(request, obj, form, change)
+
     search_fields = (
         'profile__user__username', 
         'profile__user__email')
